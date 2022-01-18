@@ -8,8 +8,24 @@
  * footer - also up to rng later
  * 
  */
+//LIS STUFF
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_LIS3DH.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+
 #include <Servo.h>
 #include <Adafruit_DotStar.h>
+
+//LIS STUFF
+// Used for software SPI
+#define LIS3DH_CLK 13
+#define LIS3DH_MISO 12
+#define LIS3DH_MOSI 11
+// Used for hardware & software SPI
+#define LIS3DH_CS 10
+Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
 //color stuff
 uint32_t forwardThrusterColor = 0x0000FF;
@@ -21,22 +37,25 @@ Adafruit_DotStar strip(1, LEDDATAPIN, LEDCLOCKPIN, DOTSTAR_BRG);
 int motorPins[] = {};
 int thrusterServoSpeeds[1] = {1500};
 int regularServoSpeeds[1] = {90};
+double currServoDeg = 0;
 
 int HEADER = 85;
 int FOOTER = 170;
 int DEBUGHEADER = 120;
 int DEBUGFOOTER = 121;
-int params[10];
+int params[5];
 int currPacketIndex = 0;
 int paramLength = 0;
 int command;
+unsigned long deltaTime;
+unsigned long pastMicros;
+
+Adafruit_BNO055 bnoIMU = Adafruit_BNO055(55);
 
 int thrusterPin = 11;
 int servoPin = 9;
 Servo thrusterServo;
 Servo regularServo;
-
-
 
 bool validHeader = false;
 
@@ -52,26 +71,57 @@ void setup(){
   strip.show();  // Turn all LEDs off ASAP
   strip.setPixelColor(0, stillThrusterColor);
   strip.show();
+
+  pastMicros = micros();
+
+  bno.begin();
 }
 
 void loop(){
+  //deltaTime = micros() - pastMicros;
+  //unsigned long now = micros();
+  //deltaTime = now - pastMicros;
+  //pastMicros = now;
+  
+  unsigned long now = micros()
+  deltaTime = now - pastMicros;
+  pastMicros = now;
+  
   readInputsDebug();
   moveThrusters();
-  moveServo();
+  //moveServo();
+  checkAccel();
+  //pastMicros = micros();
   //digitalWrite(11, LOW);
   
 }
-/*void moveServoMillis(){
-  regularServo.write();
-}*/
+void checkAccel(){
+  sensors_event_t event;
+  lis.getEvent(&event);
+  //Serial.write(event.acceleration.x);
+  //setServoSpeed(0, event.acceleration.x);
+}
 void moveThrusters(){
   //ONLY 1 motor for now, use motorPins when using more
   thrusterServo.writeMicroseconds(thrusterServoSpeeds[0]);
 }
 
 void moveServo(){
-  regularServo.write(regularServoSpeeds[0]);
+  currServoDeg += regularServoSpeeds[0] * (double) deltaTime / (double) 1000000;
+  //modo for int!
+  //Serial.println(currServoDeg);
+  Serial.println(currServoDeg);
+  //doule no modo sadde
+  if (currServoDeg > 90){
+    currServoDeg -= 90;
+  }
+  regularServo.write(currServoDeg);
 }
+void moveServoAbsolute(int newServoDeg){
+  currServoDeg = newServoDeg;
+  regularServo.write(currServoDeg);
+}
+
 //CURR SHITE
 
 void readInputs2(bool validHeader){
@@ -85,6 +135,7 @@ void readInputs2(bool validHeader){
     }
     else if (currPacketIndex == 0){
       command = Serial.read();
+      //instead use a dictionary / map
       paramLength = commandParamLength[command];
       currPacketIndex++;
     }
@@ -106,24 +157,37 @@ void readInputs2(bool validHeader){
 void processCommand(int command, int params[]){
   switch(command){
   case 0:
-  
+    //Halt
+    
   break;
   case 1:
+    //setMotorSpeed
   
   break;
   case 2:
+    //getTemp
 
   break;
-  case 3:
-
-  break;
-  }
   
+  case 3:
+    //getIMU
+  break;
+
+  case 4:
+    //setAutoReport
+  break;
+  } 
 }
+
+
 void setThrusterSpeed(int thrusterServoNum, int speed){
   thrusterServoSpeeds[thrusterServoNum] = speed;
   //for now, testing 1 thruster
   //thrusterServo.writeMicroseconds(thrusterServoSpeeds[0]);
+}
+void setServoDeg(int servoNum, int deg){
+  regularServoSpeeds[servoNum] = 0;
+  currServoDeg = deg;
 }
 void setServoSpeed(int servoNum, int speed){
   regularServoSpeeds[servoNum] = speed;
@@ -185,16 +249,16 @@ void processCommandDebug(int command, int param[]){
     case '0':
       Serial.write("com 0");
       //setServoSpeed(0, param[0]);
-      setServoSpeed(0, 0);
+      moveServoAbsolute(90);
       //thrusterServo.writeMicroseconds(1550);
       break;
     case '1':
       Serial.write("com 1");
-      setServoSpeed(0, 180);
+      moveServoAbsolute(0);
       break;
     case '2':
       Serial.write("com 2");
-      setServoSpeed(0, 90);
+      setServoSpeed(0, 3);
       break;
     case '3':
       Serial.write("com 3");
