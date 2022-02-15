@@ -106,5 +106,6 @@ if __name__ == "__main__":
     root.update()
 
     camfeed = CameraBox(root, 0.75, 0.25)
+    test = CameraBox(root, 0.25, 0.75)
 
     root.mainloop()
