@@ -4,7 +4,7 @@ from serial import *
 
 class Comms:
     def __init__(self, outputQueue=None, controls=None):
-        self.arduinoSerial = Serial(port="/dev/cu.usbmodem14101" ,baudrate=9600)
+        self.arduinoSerial = Serial(port="/dev/cu.usbmodem14201" ,baudrate=9600)
         
         #eh make these static
         self.HEADER = bytes.fromhex("AB")
@@ -107,6 +107,8 @@ class Comms:
                 print("output queue not empty")
                 currOutputValue = self.outputQueue.get()
                 print("got currQueue")
+                print(type(currOutputValue))
+                print(currOutputValue)
                 print(currOutputValue[0])
                 print(currOutputValue[1])
                 self.write(currOutputValue[0], currOutputValue[1])
