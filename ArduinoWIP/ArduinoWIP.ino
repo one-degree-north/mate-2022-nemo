@@ -25,9 +25,11 @@ Adafruit_DotStar strip(1, LEDDATAPIN, LEDCLOCKPIN, DOTSTAR_BRG);
 
 //motor stuff
 int thrusterPins[] = {5, 7, 9, 10, 11, 12};
+//5 dead?
+
 Servo thrusterServos[6];
 
-int clawPins[] = {2, 9};
+int clawPins[] = {A2, 9};
 Servo clawServos[2];
 
 
@@ -90,8 +92,8 @@ void loop(){
   deltaTime = now - pastMicros;
   pastMicros = now;
   sendSensorData();
-  //readInputs2();
-  readInputsDebug2();
+  readInputs2();
+  //readInputsDebug2();
 }
 
 
@@ -101,29 +103,26 @@ void readInputsDebug2(){
   if (Serial.available()){
     char input = Serial.read();
     if (input == '0'){
-      float* currPos;
-      sendOrientation();
+      moveThruster(0, 170);
     }
     if (input == '1'){
-      float temp = getTemperature();
-      Serial.println(temp);
+      thrusterServos[0].writeMicroseconds(1700);
     }
     else if (input == '2'){
-      //imu::Vector<3> currAccel = getAccel();
-      sendAccel();
+      thrusterServos[1].writeMicroseconds(1700);
     }
     else if (input == '3'){
-      moveClaw(0, 10);
+      thrusterServos[2].writeMicroseconds(1700);
     }
 
     else if (input == '4'){
-      moveClaw(0, 80);
+      thrusterServos[3].writeMicroseconds(1700);
     }
     else if (input == '5'){
-      clawServos[0].write(10);
+      thrusterServos[4].writeMicroseconds(1700);
     }
     else if (input == '6')
-      clawServos[0].write(80);
+      thrusterServos[5].writeMicroseconds(1700);
 
     else if (input == '7')
       sendTemperature();
@@ -142,6 +141,7 @@ void readInputsDebug2(){
 
 void readInputs2(){
   if (Serial.available()){
+    
     if (!validHeader){
       //wait until valid header
       int input = Serial.read();
@@ -193,10 +193,10 @@ void sendSensorData(){
     }
     sensorTimes[i] -= deltaTime;
     if (sensorTimes[i] <= 0){
-      Serial.write("D");
+      //Serial.write("D");
       switch(i){
         case 0:
-          Serial.write("C");
+          //Serial.write("C");
           //accel
           sendAccel();
         break;
@@ -206,7 +206,7 @@ void sendSensorData(){
         break;
         case 2:
           //orientation
-          Serial.write("B");
+          //Serial.write("B");
           //Serial.write(orientationValues[0]);
           sendOrientation();
         break;
@@ -299,7 +299,7 @@ float* getOrientation(float orientationVector[]){
 
 void sendTemperature(){
   float temperature = getTemperature();
-  sendReturnPacket(0x1D, temperature);
+  sendReturnPacket(0x1D, temperature, 0x1D);
 }
 
 float getTemperature(){
@@ -359,7 +359,7 @@ void halt(){
 }
 
 void moveThruster(int selectedThruster, int selectedSpeed){
-  thrusterServos[selectedThruster].writeMicroseconds(selectedSpeed - 1600);
+  thrusterServos[selectedThruster].writeMicroseconds(selectedSpeed*10);
 }
 
 void moveClaw(int selectedClaw, int deg){
@@ -374,7 +374,10 @@ void moveClaw(int selectedClaw, int deg){
 
 void getIMU(int selectedValue){
   if (selectedValue == 0x10){
-  
+    sendAccel();
+  }
+  if (selectedValue == 0x12){
+    sendOrientation();
   }
 }
 
