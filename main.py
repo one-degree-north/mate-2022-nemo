@@ -3,7 +3,7 @@ import time, queue
 
 class Controls:
     def __init__(self):
-        #self.comms = Comms()
+        self.comms = Comms()
         self.gyroData = [0, 0, 0]
         self.accelData = [0, 0, 0]
 
@@ -19,15 +19,15 @@ class Controls:
         print("start thread")
 
     def thrusterOn(self, motor, speed):
-        self.outputQueue.put((0x20), [motor, speed])
+        self.outputQueue.put([(0x20), [motor, speed]])
         #self.comms.write(0x20, [motor, speed])
 
     def thrusterOff(self, motor):
-        self.outputQueue.put((0x20, [motor, 0]))
+        self.outputQueue.put([0x20, [motor, 150]])
         #self.comms.write(0x20, [motor, 0])
 
     def getGyroData(self):
-        self.outputQueue.put((0x30, [0x12]))
+        self.outputQueue.put([0x30, [0x12]])
         #self.comms.write(0x30, 0x12)
     
     def setClawDeg(self, selectedServo=0, servoDeg=None):
@@ -175,6 +175,13 @@ def testCommThreading2():
         if (input()):
             controls.setClawDeg(selectedServo=0)
 
+def testThruster():
+    controls=Controls()
+    controls.startThread()
+    while True:
+        currMotor = int(input())
+        currSpeed = int(input())
+        controls.thrusterOn(currMotor, currSpeed)
 #def testCommThreading2():
 #    pass
 
@@ -182,4 +189,5 @@ if(__name__ == "__main__"):
     #test()
     #main()
     #testServo()
-    testCommThreading2()
+    #testCommThreading2()
+    testThruster()

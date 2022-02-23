@@ -1,14 +1,3 @@
-//RESIGN
-
-//init shite, to be changed
-/*
- * header - up to rng later
- * command - 1 to whatever
- * params - whatever length, determined by command
- * footer - also up to rng later
- * 
- */
-//LIS STUFF
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LIS3DH.h>
@@ -34,37 +23,59 @@ uint32_t stillThrusterColor = 0xFFFFFF;
 #define LEDCLOCKPIN   6
 Adafruit_DotStar strip(1, LEDDATAPIN, LEDCLOCKPIN, DOTSTAR_BRG);
 
-int motorPins[] = {};
+//motor stuff
+int thrusterPins[] = {5, 7, 9, 10, 11, 12};
+//5 dead?
+
+Servo thrusterServos[6];
+
+int clawPins[] = {A2, 9};
+Servo clawServos[2];
+
+
 int thrusterServoSpeeds[1] = {1500};
 int regularServoSpeeds[1] = {90};
 double currServoDeg = 0;
 
-int HEADER = 85;
-int FOOTER = 170;
-int DEBUGHEADER = 120;
-int DEBUGFOOTER = 121;
-int params[5];
+
+int HEADER = 0xAB;
+int FOOTER = 0xB3;
+int DEBUGHEADER = 72;
+int DEBUGFOOTER = 73;
+
+int currParamNum = 0;
+int currParamLength = 0;
+
+int params[4];
 int currPacketIndex = 0;
-int paramLength = 0;
 int command;
-unsigned long deltaTime;
+bool validHeader = false;
+
+//sensor data
+float orientationVector[3];
+float temperature;
+
+int sensorOutputDelays[5];
+int sensorTimes[5];
+
+
+int deltaTime;
 unsigned long pastMicros;
 
 Adafruit_BNO055 bnoIMU = Adafruit_BNO055(55);
 
-int thrusterPin = 11;
-int servoPin = 9;
-Servo thrusterServo;
-Servo regularServo;
-
-bool validHeader = false;
-
-int commandParamLength[] = {};
 
 void setup(){
-  thrusterServo.attach(thrusterPin);
-  regularServo.attach(servoPin);
+  for (int i = 0; i < 6; i++){
+    thrusterServos[i].attach(thrusterPins[i]);
+  }
+
+  for (int i = 0; i < 2; i++){
+    clawServos[i].attach(clawPins[i]);
+  }
+  
   Serial.begin(9600);
+  delay(10);
 
   strip.begin(); // Initialize pins for output
   strip.setBrightness(10);
@@ -72,222 +83,320 @@ void setup(){
   strip.setPixelColor(0, stillThrusterColor);
   strip.show();
 
+  bnoIMU.begin();
   pastMicros = micros();
-
-  bno.begin();
 }
 
 void loop(){
-  //deltaTime = micros() - pastMicros;
-  //unsigned long now = micros();
-  //deltaTime = now - pastMicros;
-  //pastMicros = now;
-  
-  unsigned long now = micros()
+  unsigned long now = millis();
   deltaTime = now - pastMicros;
   pastMicros = now;
-  
-  readInputsDebug();
-  moveThrusters();
-  //moveServo();
-  checkAccel();
-  //pastMicros = micros();
-  //digitalWrite(11, LOW);
-  
-}
-void checkAccel(){
-  sensors_event_t event;
-  lis.getEvent(&event);
-  //Serial.write(event.acceleration.x);
-  //setServoSpeed(0, event.acceleration.x);
-}
-void moveThrusters(){
-  //ONLY 1 motor for now, use motorPins when using more
-  thrusterServo.writeMicroseconds(thrusterServoSpeeds[0]);
+  sendSensorData();
+  readInputs2();
+  //readInputsDebug2();
 }
 
-void moveServo(){
-  currServoDeg += regularServoSpeeds[0] * (double) deltaTime / (double) 1000000;
-  //modo for int!
-  //Serial.println(currServoDeg);
-  Serial.println(currServoDeg);
-  //doule no modo sadde
-  if (currServoDeg > 90){
-    currServoDeg -= 90;
-  }
-  regularServo.write(currServoDeg);
-}
-void moveServoAbsolute(int newServoDeg){
-  currServoDeg = newServoDeg;
-  regularServo.write(currServoDeg);
-}
 
-//CURR SHITE
+//READING INPUTS AND EXECUTING COMMANDS
 
-void readInputs2(bool validHeader){
+void readInputsDebug2(){
   if (Serial.available()){
+    char input = Serial.read();
+    if (input == '0'){
+      moveThruster(0, 170);
+    }
+    if (input == '1'){
+      thrusterServos[0].writeMicroseconds(1700);
+    }
+    else if (input == '2'){
+      thrusterServos[1].writeMicroseconds(1700);
+    }
+    else if (input == '3'){
+      thrusterServos[2].writeMicroseconds(1700);
+    }
+
+    else if (input == '4'){
+      thrusterServos[3].writeMicroseconds(1700);
+    }
+    else if (input == '5'){
+      thrusterServos[4].writeMicroseconds(1700);
+    }
+    else if (input == '6')
+      thrusterServos[5].writeMicroseconds(1700);
+
+    else if (input == '7')
+      sendTemperature();
+
+    else if (input == '8'){
+      setAutoReport(0x1C, 1000);
+      setAutoReport(0x1E, 1000);
+    }
+    else if (input == '9'){
+      setAutoReport(0x1E, 1000);
+    }
+    Serial.println("---");
+  }
+}
+
+
+void readInputs2(){
+  if (Serial.available()){
+    
     if (!validHeader){
       //wait until valid header
       int input = Serial.read();
       if (input == HEADER){
         validHeader = true;
+        currPacketIndex = 0;
+        currParamLength = 0;
       }
     }
     else if (currPacketIndex == 0){
       command = Serial.read();
-      //instead use a dictionary / map
-      paramLength = commandParamLength[command];
+      //Serial.write(command);
       currPacketIndex++;
     }
-    else if (currPacketIndex < paramLength + 1){
+    else{
       int param = Serial.read();
-      params[currPacketIndex - 1] = param;
-      currPacketIndex++; 
-    }
-    else if (currPacketIndex >= paramLength + 1){
-      currPacketIndex = 0;
-      validHeader = false;
-      int footer = Serial.read();
-      if (footer == FOOTER){
-        processCommand(command, params);
+      if (param == FOOTER){
+        //execute com!
+        processCommand(command, params, currParamLength);
+        resetInputReading();
       }
+      else if (currPacketIndex-1 >= 5){
+        //too many params to be possible!
+        
+        resetInputReading();
+        
+      }
+      params[currPacketIndex - 1] = param;
+      currPacketIndex++;
+      currParamLength++;
     }
   }
 }
-void processCommand(int command, int params[]){
+
+void resetInputReading(){
+  currPacketIndex = 0;
+  validHeader = false;
+  //params = new int[5];
+  currParamLength = 0;
+  command = 0;
+  
+}
+
+void sendSensorData(){
+  for (int i = 0; i < 5; i++){
+    int currDelay = sensorOutputDelays[i];
+    if (currDelay == 0){
+      continue;
+    }
+    sensorTimes[i] -= deltaTime;
+    if (sensorTimes[i] <= 0){
+      //Serial.write("D");
+      switch(i){
+        case 0:
+          //Serial.write("C");
+          //accel
+          sendAccel();
+        break;
+        case 1:
+          //temp
+          sendTemperature();
+        break;
+        case 2:
+          //orientation
+          //Serial.write("B");
+          //Serial.write(orientationValues[0]);
+          sendOrientation();
+        break;
+        case 3:
+          //voltage
+          sendVoltage();
+        break;
+      }
+      sensorTimes[i] = currDelay;
+    }
+  }
+}
+
+void processCommand(int command, int params[], int currParamLength){
+  //Serial.print("ayy processing com");
+  //Serial.write(command);
+  //Serial.write("A");
   switch(command){
-  case 0:
-    //Halt
+  case 0x10:
+    if (currParamLength == 0)
+      halt();
     
   break;
-  case 1:
-    //setMotorSpeed
-  
+  case 0x20:
+    if (currParamLength == 2)
+      moveThruster(params[0], params[1]);
+    
   break;
-  case 2:
-    //getTemp
-
+  case 0x12:
+    if (currParamLength == 0){
+      sendTemperature();
+    }
   break;
-  
-  case 3:
+  case 0x23:
+    //Serial.write("A");
+    if (currParamLength == 2){
+      //Serial.write(params[1]);
+      moveClaw(params[0], params[1]);
+    }
+  break;
+  case 0x30:
     //getIMU
+    if (currParamLength == 1){
+      if (params[0] == 0x10)
+        sendAccel();
+      else if (params[1] == 0x12)
+        sendOrientation();
+    }
+    
   break;
 
-  case 4:
+  case 0x50:
+    //Serial.write(0x10);
+    //Serial.println("STARTING AUTO REPORT");
     //setAutoReport
+    if (currParamLength == 2)
+      //IN MILLISECONDS/10!
+      setAutoReport(params[0], params[1]*10);
   break;
   } 
 }
 
 
-void setThrusterSpeed(int thrusterServoNum, int speed){
-  thrusterServoSpeeds[thrusterServoNum] = speed;
-  //for now, testing 1 thruster
-  //thrusterServo.writeMicroseconds(thrusterServoSpeeds[0]);
-}
-void setServoDeg(int servoNum, int deg){
-  regularServoSpeeds[servoNum] = 0;
-  currServoDeg = deg;
-}
-void setServoSpeed(int servoNum, int speed){
-  regularServoSpeeds[servoNum] = speed;
+
+
+//COMMANDS
+
+void sendOrientation(){
+  float orientationValues[3];
+  //Serial.write(orientationValues[0]);
+  getOrientation(orientationValues);
+
+  //Serial.write(orientationValues[0]);
+  
+  sendReturnPacket(0x1E, orientationValues[0], 0x00);
+  sendReturnPacket(0x1E, orientationValues[1], 0x30);
+  sendReturnPacket(0x1E, orientationValues[2], 0x60);
 }
 
-//DEBUG SHITE
+float* getOrientation(float orientationVector[]){
+  sensors_event_t event;
+  bnoIMU.getEvent(&event);
+  
+  orientationVector[0] = event.orientation.x;
+  orientationVector[1] = event.orientation.y;
+  orientationVector[2] = event.orientation.z;
 
-void readInputsDebug(){
-  if (Serial.available()){
-    if (!validHeader){
-      //wait until valid header
-      int input = Serial.read();
-      if (input == DEBUGHEADER){
-        validHeader = true;
-        Serial.write("valid header\n");
-      }
-      else{
-        Serial.write("invalid header\n");
-      }
-    }
-    else if (currPacketIndex == 0){
-      command = Serial.read();
-      Serial.write("command: ");
-      Serial.write(command);
-      Serial.write("\n");
-      paramLength = 5;
-      currPacketIndex++;
-    }
-    else if (currPacketIndex < paramLength + 1){
-      int param = Serial.read();
-      params[currPacketIndex - 1] = param;
-      Serial.write(" currPacketIndex: ");
-      Serial.write(currPacketIndex);
-      Serial.write("param: ");
-      Serial.write(currPacketIndex-1);
-      Serial.write(" value: ");
-      Serial.write(param);
-      Serial.write("\n");
-      currPacketIndex++; 
-    }
-    else if (currPacketIndex >= paramLength + 1){
-      currPacketIndex = 0;
-      validHeader = false;
-      int footer = Serial.read();
-      if (footer == DEBUGFOOTER){
-        Serial.write("valid footer");
-        processCommandDebug(command, params);
-      }
-      else{
-        Serial.write("invalid footer");
-      }
-    }
+  return orientationVector;
+}
+
+void sendTemperature(){
+  float temperature = getTemperature();
+  sendReturnPacket(0x1D, temperature, 0x1D);
+}
+
+float getTemperature(){
+  sensors_event_t event;
+  bnoIMU.getEvent(&event);
+  return event.temperature;
+}
+
+void sendAccel(){
+  float accelValues[3];
+  getAccel(accelValues);
+  sendReturnPacket(0x1C, accelValues[0], 0x00);
+  sendReturnPacket(0x1C, accelValues[1], 0x30);
+  sendReturnPacket(0x1C, accelValues[2], 0x60);
+}
+
+float* getAccel(float accelValues[]){
+  imu::Vector<3> currAccel = bnoIMU.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+
+  accelValues[0] = currAccel.x();
+  accelValues[1] = currAccel.y();
+  accelValues[2] = currAccel.z();
+  return accelValues;
+}
+
+void sendReturnPacket(int sensorType, float sensorValue, int param){
+  //Serial.write("WTF");
+  Serial.write(HEADER);
+  Serial.write(sensorType);
+  Serial.write(param);
+  byte* temp = (byte*) &sensorValue;
+  Serial.write(temp[0]);
+  Serial.write(temp[1]);
+  Serial.write(temp[2]);
+  Serial.write(temp[3]);
+  Serial.write(FOOTER);
+}
+
+void sendReturnPacket(int sensorType, float sensorValue){
+  Serial.write(HEADER);
+  Serial.write(sensorType);
+  Serial.write(sensorValue);
+  Serial.write(FOOTER);
+}
+
+void sendVoltage(){
+  
+}
+
+void getVoltage(){
+
+}
+
+void halt(){
+  //reset all motor functions
+  
+}
+
+void moveThruster(int selectedThruster, int selectedSpeed){
+  thrusterServos[selectedThruster].writeMicroseconds(selectedSpeed*10);
+}
+
+void moveClaw(int selectedClaw, int deg){
+  if (selectedClaw == 0){
+    clawServos[0].write(deg);
+  }
+  else{
+    clawServos[1].write(deg);
+  }
+   
+}
+
+void getIMU(int selectedValue){
+  if (selectedValue == 0x10){
+    sendAccel();
+  }
+  if (selectedValue == 0x12){
+    sendOrientation();
   }
 }
 
+void setAutoReport(int selectedValue, int reportDelay){
+  switch(selectedValue){
+  case 0x1C:
+    sensorOutputDelays[0] = reportDelay;
+  break;
 
-void processCommandDebug(int command, int param[]){
-  switch(command){
-    case '0':
-      Serial.write("com 0");
-      //setServoSpeed(0, param[0]);
-      moveServoAbsolute(90);
-      //thrusterServo.writeMicroseconds(1550);
-      break;
-    case '1':
-      Serial.write("com 1");
-      moveServoAbsolute(0);
-      break;
-    case '2':
-      Serial.write("com 2");
-      setServoSpeed(0, 3);
-      break;
-    case '3':
-      Serial.write("com 3");
-      //setServoSpeed(s0, param[0]);
-      setThrusterSpeed(0, 1450);
-      //thrusterServo.writeMicroseconds(1550);
-      break;
-    case '4':
-      Serial.write("com 4");
-      setThrusterSpeed(0, 1500);
-      strip.setPixelColor(0, stillThrusterColor);
-      strip.show();
-      break;
-    case '5':
-      Serial.write("com 5");
-      //setThrusterSpeed(0, 1550);
-      setThrusterSpeed(0, 1550);
-      strip.setPixelColor(0, forwardThrusterColor);
-      strip.show();
-      break;
-    case '6':
-      Serial.write("come 6");
-      regularServo.writeMicroseconds(1400);
-      break;
-    case '7':
-      break;
-    case '8':
-      break;
-    case '9':
-      break;
+  case 0x1D:
+    sensorOutputDelays[1] = reportDelay;
+  break;
+
+  case 0x1E:
+    sensorOutputDelays[2] = reportDelay;
+  break;
+
+  case 0x1f:
+    sensorOutputDelays[3] = reportDelay;
+  break;
   }
 }

@@ -5,7 +5,6 @@ from serial import *
 class Comms:
     def __init__(self, outputQueue=None, controls=None):
         self.arduinoSerial = Serial(port="/dev/cu.usbmodem14101" ,baudrate=9600)
-        
         #eh make these static
         self.HEADER = bytes.fromhex("AB")
         self.FOOTER = bytes.fromhex("B3")
