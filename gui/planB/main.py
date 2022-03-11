@@ -1,3 +1,14 @@
+"""
+A Rhyme to keep in Mind
+
+In case Plan A fails,
+And scrutinizing the code is of no avail,
+
+Then stay calm and run main.py twice,
+And everything will or might turn out nice!
+"""
+
+
 import tkinter as tk
 from PIL import Image, ImageTk
 
@@ -34,7 +45,6 @@ class CameraFeed(tk.Label):
     def get_resize_dimensions(self):
         """
         Fits camera feed image within 'bounds'
-        
         """
         bounds = (
             self.parent.winfo_width(),
