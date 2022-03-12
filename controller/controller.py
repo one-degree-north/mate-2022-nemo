@@ -262,6 +262,7 @@ class XboxController(threading.Thread):
         joy.init()
 
     # Called by the thread
+    # I think this extends the run() method of Thread ~ Kevin
     def run(self):
         self._start()
 
@@ -277,8 +278,10 @@ class XboxController(threading.Thread):
 
                 # Thumb sticks, trigger buttons                    
                 if event.type == JOYAXISMOTION:
+                    print("Button A")
                     # Is this axis on our xbox controller
                     if event.axis in self.AXISCONTROLMAP:
+                        print("Button A subtype 1")
                         # Is this a y axis
                         yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
                         # Update the control value
@@ -286,19 +289,23 @@ class XboxController(threading.Thread):
                                                 self._sortOutAxisValue(event.value, yAxis))
                     # Is this axis a trigger
                     if event.axis in self.TRIGGERCONTROLMAP:
+                        print("Button type 2")
                         # Update the control value
                         self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
                                                 self._sortOutTriggerValue(event.value))
                         
                 # D pad
                 elif event.type == JOYHATMOTION:
+                    print("Button B")
                     # Update control value
                     self.updateControlValue(self.XboxControls.DPAD, event.value)
 
                 # Button pressed and unpressed
                 elif event.type == JOYBUTTONUP or event.type == JOYBUTTONDOWN:
+                    print("Button C")
                     # Is this button on our xbox controller
                     if event.button in self.BUTTONCONTROLMAP:
+                        print("Button C subtype")
                         # Update control value
                         self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
                                                 self._sortOutButtonValue(event.type))
