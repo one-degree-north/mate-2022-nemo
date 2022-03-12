@@ -44,7 +44,7 @@ class CameraFeed(tk.Label):
 
     def get_resize_dimensions(self):
         """
-        Fits camera feed image within 'bounds'
+        Scales camera feed to fit within window
         """
         bounds = (
             self.parent.winfo_width(),
