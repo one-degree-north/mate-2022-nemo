@@ -14,7 +14,8 @@ import threading
 import time
 
 # Start xboxdrv
-os.system("sudo jstest /dev/input/js0")
+# os.system("sudo jstest /dev/input/js0")
+# Probably shouldn't run this thingy
 
 
 """
@@ -365,6 +366,8 @@ if __name__ == '__main__':
     #generic call back
     def controlCallBack(xboxControlId, value):
         print(f"Control Id = {xboxControlId}, Value = {value}")
+        # def change_viewer(xboxControlID, value):
+            # Execute a command here that changes the xbox viewer
 
     #specific callbacks for the left thumb (X & Y)
     def leftThumbX(xValue):
