@@ -84,6 +84,7 @@ class XboxViewer(Frame):
 
     
     def change_state(self, cid: str, new_val: Union[tuple[float, float], float]=None, new_pos: tuple[float, float]=None):
+        print("doing")
         if cid in self.canvas_item_ids.keys():
             item_id = self.canvas_item_ids[cid]
 
@@ -104,7 +105,9 @@ class XboxViewer(Frame):
                 pass
 
         else:
-            raise
+            print("cid not found")
+
+        self.after(1000, self.change_state)
     
     
     # Behaves like a property
@@ -139,9 +142,7 @@ root.update()
 viewer = XboxViewer(root, bg="purple", width=500, height=500)
 viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
 
-while True:
-    sleep(1)
-    viewer.change_state("14", new_val=1)
+root.mainloop()
 
 
 
