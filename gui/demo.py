@@ -1,58 +1,48 @@
 """
-Template for a communication with a tkinter 'while loop'
+Template code for communication between controller/controller.py
+and gui/xboxviewer.py
 """
 
+import multiprocessing as mp
 
-
-from tkinter import *
-from random import randint
 from time import sleep
+from random import randint
 
-import multiprocessing, queue
 
-q = queue.Queue()
+def one(q):
+    """
+    Queue checker
 
-def gui():
-    root = Tk()
-    root.geometry("500x500")
-    root.update()
-
-    l = Label(root, text="Off")
-    l.pack()
-
-    def switch_loop(l):
-        # trigger = get stuff from queue
-        if randint(1,2) == 1:
-            print(1)
-            # print("\tFlicking...")
-            if l.cget("text") == "On":
-                l.configure(text="Off")
-            else:
-                l.configure(text="On")
-        else:
-            print(2)
-        l.after(1000, switch_loop, l)
-
-    switch_loop(l)
-
-    root.mainloop()
-    
-def looper():
-    count = 0
+    If q.get() is recognized, call a function
+    according to its contents
+    """
     while True:
-        print(count)
-        count += 1
+        thingy = q.get()
+        print(thingy)
+        if thingy == 1:
+            
+            print("Found one!")
+
+
+def two(q):
+    """
+    This simulates controller input being
+    added to a queue
+    """
+    while True:
+        r = randint(1,2)
+        q.put(r)
         sleep(1)
 
-
 if __name__ == "__main__":
-    t1 = multiprocessing.Process(target=gui)
-    t2 = multiprocessing.Process(target=looper)
+    q = mp.Queue(1)
+
+    t1 = mp.Process(target=one, args=(q,))
+    t2 = mp.Process(target=two, args=(q,))
 
     t1.start()
     t2.start()
 
     t1.join()
     t2.join()
-
 
