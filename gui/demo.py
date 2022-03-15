@@ -7,6 +7,8 @@ import multiprocessing as mp
 
 from time import sleep
 from random import randint
+from tkinter import *
+
 
 
 def one(q):
@@ -16,13 +18,43 @@ def one(q):
     If q.get() is recognized, call a function
     according to its contents
     """
-    while True:
+    # while True:
+    #     thingy = q.get()
+    #     print(thingy)
+    #     if thingy == 1:
+            
+    #         print("Found one!")
+
+
+    root = Tk()
+    root.geometry("500x500")
+    root.update()
+
+    l = Label(root, text="this")
+    l.pack()
+
+    b = Button(root, text="Quit")
+    b.pack()
+
+
+    def checker():
+        # print("Getting from queue")
         thingy = q.get()
         print(thingy)
-        if thingy == 1:
-            
-            print("Found one!")
+        
 
+        # LOGIC STARTS HERE!!!!!!!
+        if thingy == 1:
+            print("Found one!")
+            l.configure(text="_______")
+        else:
+            l.configure(text="0000000")
+
+        # THIS IS A TKINTER WHILE LOOP
+        l.after(1000, checker)
+
+    checker()
+    root.mainloop()
 
 def two(q):
     """
