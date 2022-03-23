@@ -28,50 +28,53 @@ class State():
 
 @dataclass
 class Color():
-    active = "blue"
-    passive = "green"
+    active = "#BBCEFF"
+    passive = "#004AFF"
 
 class XboxViewer(Frame):
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, q, **kwargs):
         Frame.__init__(self, parent, **kwargs)
         self.parent: Tk = parent
+        # Start the canvas
         self.relative_canvas_width, self.relative_canvas_height = 0.5, 0.5
-
         self.c = Canvas(self, bg="white", width=500, height=500)
         self.c.bind("<Configure>", self.move)
         self.c.place(relx=0.5, rely=0.5, relwidth=self.relative_canvas_width, relheight=self.relative_canvas_height, anchor=CENTER)
-
-        # self.controlstates = { # Control ID : Control State
-        #     "6": State(6, (0.76, 0.36335)),
-        #     "7": State(7, (0.82889, 0.27019)),
-        #     "8": State(8, (0.68889, 0.27019)),
-        #     "9": State(9, (0.76, 0.18012)),
-
-        #     "10": State(10, (0.76, 0.046583)),
-        #     "11": State(11, (0.24, 0.46583)),
-
-        #     "12": State(12, (0.42667, 0.27019)),
-        #     "13": State(13, (0.57333, 0.27019)),
-        #     "14": State(14, (0.5, 0.10248)),
-
-        #     "17": State(17, (0.36667, 0.50311), disp=(0, 0)),
-        # }
-
+        # Put controls onto the canvas
         self.controlstates = { # Control ID : Control State
-            "6": State(6, (0.5, 0.5)),
+            "6": State(6, (0.5, 0.66667)),
+            "7": State(7, (0.66667, 0.5)),
+            "8": State(8, (0.33333, 0.5)),
+            "9": State(9, (0.5, 0.33333)),
         }
 
-        # Control ID : Canvas Item ID 
-        self.canvas_item_ids = {}
+        self.canvas_item_ids = {} # Control ID : Canvas Item ID 
 
         self.buttons = ["6", "7", "8", "9", "10", "11", "12", "13", "14", "17"]
         self.analogs = []
 
-        self.show_control("6")
-        # print(self.canvas_size)
+        for control in self.controlstates.keys():
+            self.show_control(control)
 
-        # print(self.canvas_item_ids)
+        sleep(1)
+
+        def checker():
+            thingy = q.get()
+            print("checking...")
+            
+            if thingy[0] == "6":
+                print("switching...")
+                if thingy[1] == 1:
+                    self.change_state("6", new_val=1)
+                elif thingy[1] == 0:
+                    self.change_state("6", new_val=0)
+            
+            self.after(1, checker)
+
+        checker()
+        print("checker passed")
+        # q.put("done")
         
 
     def show_control(self, cid, is_active=False):
@@ -91,9 +94,9 @@ class XboxViewer(Frame):
 
             fill = ""
             if is_active:
-                fill = "blue"
+                fill = Color.active
             else:
-                fill = "green"
+                fill = Color.passive
 
             canvas_item_id: str = self.c.create_oval(x0, y0, x1, y1, fill=fill)
             self.canvas_item_ids[cid] = canvas_item_id
@@ -103,7 +106,7 @@ class XboxViewer(Frame):
 
     
     def change_state(self, cid: str, new_val: Union[tuple[float, float], float]=None, new_pos: tuple[float, float]=None):
-        print("doing")
+        # print("doing")
         if cid in self.canvas_item_ids.keys():
             item_id = self.canvas_item_ids[cid]
 
@@ -116,7 +119,7 @@ class XboxViewer(Frame):
                 self.c.coords(item_id, x0, y0, x1, y1)
             
             if self.control_type(cid) == "button":
-                print("controller is a button")
+                # print("controller is a button")
                 if self.controlstates[cid].activation != new_val and self.controlstates[cid].activation != None:
                     self.controlstates[cid].activation = new_val
                     
@@ -184,18 +187,18 @@ class XboxViewer(Frame):
 
 
 
-        
-root = Tk()
-root.geometry("500x500")
-root.update()
+if __name__ == "__main__":   
+    root = Tk()
+    root.geometry("500x500")
+    root.update()
 
 
 
 
-viewer = XboxViewer(root, bg="white", width=500, height=500)
-viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
+    viewer = XboxViewer(root, bg="lightgrey", width=500, height=500)
+    viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
 
-root.mainloop()
+    root.mainloop()
 
 
 
