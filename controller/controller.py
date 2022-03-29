@@ -12,7 +12,7 @@ from pygame.locals import *
 import os, sys
 import threading
 import time
-
+from main import Controls
 # Start xboxdrv
 # os.system("sudo jstest /dev/input/js0")
 # Probably shouldn't run this thingy
@@ -362,12 +362,87 @@ class XboxController(threading.Thread):
     
 #tests
 if __name__ == '__main__':
-
+    frontLThruster = 0
+    frontRThruster = 0
+    midLThruster = 0
+    midRThruster = 0
+    backLThruster = 0
+    backRThruster = 0
+    topSpeed = 200
+    minSpeed = 100
     #generic call back
     def controlCallBack(xboxControlId, value):
         print(f"Control Id = {xboxControlId}, Value = {value}")
         # def change_viewer(xboxControlID, value):
             # Execute a command here that changes the xbox viewer
+        """0 - x axis left thumb   (+1 is right, -1 is left)
+        1 - y axis left thumb   (+1 is down, -1 is up)
+        2 - x axis right thumb  (+1 is right, -1 is left)
+        3 - y axis right thumb  (+1 is down, -1 is up)
+        4 - right trigger
+        5 - left trigger"""
+        #robot thruster rotation
+        #get left thumb and right thumb controls
+        print(xboxControlId)
+        #move up, down, tilt, tilt
+        """
+        if (xboxControlId == 0):
+            #tilt
+            thrusterStrength = value*50+150
+            reverseThrusterStrength = -1*value*50+150
+            Controls.thrusterOn(midRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(midLThruster, thrusterStrength)
+        if (xboxControlId == 1):
+            #move up and down
+            thrusterStrength = value*50+150
+            reverseThrusterStrength = -1*value*50+150
+            Controls.thrusterOn(midRThruster, thrusterStrength)
+            Controls.thrusterOn(midLThruster, thrusterStrength)
+        
+        #move front, back, side, side
+        if (xboxControlId == 2):
+            #side
+            thrusterStrength = value*50+150
+            reverseThrusterStrength = -1*value*50+150
+            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(backRThruster, thrusterStrength)
+            Controls.thrusterOn(frontLThruster, thrusterStrength)
+            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+            pass
+        if (xboxControlId == 3):
+            #front / back
+            thrusterStrength = value*50+150
+            reverseThrusterStrength = -1*value*50+150
+            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+            Controls.thrusterOn(backRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+        
+        if (xboxControlId == 4):
+            #rotate towards the right
+            frontThrusterStrengthX = -1*value*50+150
+            reverseThrusterStrengthX = value*50+150
+            Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
+            Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
+            Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
+            Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
+            pass
+        if (xboxControlId == 5):
+            #rotate towards the left
+            frontThrusterStrengthX = value*50+150
+            reverseThrusterStrengthX = -1*value*50+150
+            Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
+            Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
+            Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
+            Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
+            pass
+        """
+        #robot thruster front / back / left / right movement
+        
+        #robot claw
+        
+        #robot adjust sensor? (is this needed?)
+
 
     #specific callbacks for the left thumb (X & Y)
     def leftThumbX(xValue):

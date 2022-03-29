@@ -6,7 +6,6 @@ class Controls:
         self.comms = Comms()
         self.gyroData = [0, 0, 0]
         self.accelData = [0, 0, 0]
-
         self.tempData = 0
         self.clawOpen = False
         self.clawOpenDeg = 10

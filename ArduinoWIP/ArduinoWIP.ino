@@ -24,7 +24,7 @@ uint32_t stillThrusterColor = 0xFFFFFF;
 Adafruit_DotStar strip(1, LEDDATAPIN, LEDCLOCKPIN, DOTSTAR_BRG);
 
 //motor stuff
-int thrusterPins[] = {5, 7, 9, 10, 11, 12};
+int thrusterPins[] = {7, 9, 10, 11, 12, 13};
 //5 dead?
 
 Servo thrusterServos[6];
