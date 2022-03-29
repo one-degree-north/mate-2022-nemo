@@ -366,6 +366,15 @@ if __name__ == '__main__':
     #generic call back
     def controlCallBack(xboxControlId, value):
         print(f"Control Id = {xboxControlId}, Value = {value}")
+        
+        # EXAMPLE
+        if xboxControlId == 8:
+            if value == 1: ... # if button 8 is pressed
+                # call function here
+            else: ... # if button 8 is released
+                # call function here
+
+
         # def change_viewer(xboxControlID, value):
             # Execute a command here that changes the xbox viewer
 
