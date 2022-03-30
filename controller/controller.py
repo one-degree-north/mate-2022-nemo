@@ -373,17 +373,7 @@ if __name__ == '__main__':
     #generic call back
     def controlCallBack(xboxControlId, value):
         print(f"Control Id = {xboxControlId}, Value = {value}")
-        
-        # EXAMPLE
-        if xboxControlId == 8:
-            if value == 1: ... # if button 8 is pressed
-                # call function here
-            else: ... # if button 8 is released
-                # call function here
-
-
-        # def change_viewer(xboxControlID, value):
-            # Execute a command here that changes the xbox viewer
+    
         """0 - x axis left thumb   (+1 is right, -1 is left)
         1 - y axis left thumb   (+1 is down, -1 is up)
         2 - x axis right thumb  (+1 is right, -1 is left)
@@ -394,7 +384,7 @@ if __name__ == '__main__':
         #get left thumb and right thumb controls
         print(xboxControlId)
         #move up, down, tilt, tilt
-        """
+        
         if (xboxControlId == 0):
             #tilt
             thrusterStrength = value*50+150
@@ -445,7 +435,7 @@ if __name__ == '__main__':
             Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
             Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
             pass
-        """
+        
         #robot thruster front / back / left / right movement
         
         #robot claw
