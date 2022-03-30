@@ -3,6 +3,30 @@ Uses xboxdrv and pygame
 Works on Linux only
 
 Before running this script, xboxdrv should be running
+
+Left DPAD vertical is Y axis and control id is 1. Range -100 to 100
+Right DPAD horizontal is X axis and control id is 0. Range -100 to 100
+
+The cross shaped button is control id 17, up -> (0,1), down -> (0,-1), left -> (-1, 0), right...
+
+Right DPAD is not working. IDs 3 and 4
+
+A = 6
+B = 7
+8 = x
+y is 9
+
+
+right B is ID 11, either 1 or 0
+same for left B, which is ID 10
+
+left trigger is ID 2, -100 when not pressed, 100 when pressed
+right trigger is different for some reason. 0 when not pressed, 100 when pressed. ID is 5
+
+
+
+
+
 """
 
 
@@ -382,59 +406,88 @@ if __name__ == '__main__':
         5 - left trigger"""
         #robot thruster rotation
         #get left thumb and right thumb controls
-        print(xboxControlId)
         #move up, down, tilt, tilt
         
-        if (xboxControlId == 0):
-            #tilt
-            thrusterStrength = value*50+150
-            reverseThrusterStrength = -1*value*50+150
-            Controls.thrusterOn(midRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(midLThruster, thrusterStrength)
-        if (xboxControlId == 1):
-            #move up and down
-            thrusterStrength = value*50+150
-            reverseThrusterStrength = -1*value*50+150
-            Controls.thrusterOn(midRThruster, thrusterStrength)
-            Controls.thrusterOn(midLThruster, thrusterStrength)
+        # if (xboxControlId == 0):
+        #     #tilt
+        #     thrusterStrength = value*50+150
+        #     reverseThrusterStrength = -1*value*50+150
+        #     Controls.thrusterOn(midRThruster, reverseThrusterStrength)
+        #     Controls.thrusterOn(midLThruster, thrusterStrength)
+        # if (xboxControlId == 1):
+        #     #move up and down
+        #     thrusterStrength = value*50+150
+        #     reverseThrusterStrength = -1*value*50+150
+        #     Controls.thrusterOn(midRThruster, thrusterStrength)
+        #     Controls.thrusterOn(midLThruster, thrusterStrength)
         
         #move front, back, side, side
-        if (xboxControlId == 2):
-            #side
-            thrusterStrength = value*50+150
-            reverseThrusterStrength = -1*value*50+150
-            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(backRThruster, thrusterStrength)
-            Controls.thrusterOn(frontLThruster, thrusterStrength)
-            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
-            pass
-        if (xboxControlId == 3):
-            #front / back
-            thrusterStrength = value*50+150
-            reverseThrusterStrength = -1*value*50+150
-            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
-            Controls.thrusterOn(backRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+
+        thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+        reverseThrusterStrength = -1 * thrusterStrength
         
-        if (xboxControlId == 4):
-            #rotate towards the right
-            frontThrusterStrengthX = -1*value*50+150
-            reverseThrusterStrengthX = value*50+150
-            Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
-            Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
-            Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
-            Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
-            pass
-        if (xboxControlId == 5):
-            #rotate towards the left
-            frontThrusterStrengthX = value*50+150
-            reverseThrusterStrengthX = -1*value*50+150
-            Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
-            Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
-            Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
-            Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
-            pass
+        if xboxControlId == 0: # left-right movement
+            # for value of -100 to 0, move left
+            # for value of 0 to 100, move right
+            Controls.thrusterOn(frontLThruster, thrusterStrength)
+            Controls.thrusterOn(backLThruster, thrusterStrength)
+
+            Controls.thrusterOn(frontRThruster, thrusterStrength)
+            Controls.thrusterOn(backRThruster, thrusterStrength)
+
+        if xboxControlId == 1: # front-back movement
+            # for value of -100 to 0, move backward
+            # for value of 0 to 100, move forward    
+            Controls.thrusterOn(frontRThruster, thrusterStrength)
+            Controls.thrusterOn(frontLThruster, thrusterStrength)
+
+            Controls.thrusterOn(backRThruster, thrusterStrength)
+            Controls.thrusterOn(backLThruster, thrusterStrength)
+
+
+        
+
+        
+
+
+
+
+        # if (xboxControlId == 2):
+        #     #side
+        #     thrusterStrength = value*50+150
+        #     reverseThrusterStrength = -1*value*50+150
+        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+        #     Controls.thrusterOn(backRThruster, thrusterStrength)
+        #     Controls.thrusterOn(frontLThruster, thrusterStrength)
+        #     Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+        #     pass
+        # if (xboxControlId == 3):
+        #     #front / back
+        #     thrusterStrength = value*50+150
+        #     reverseThrusterStrength = -1*value*50+150
+        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+        #     Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+        #     Controls.thrusterOn(backRThruster, reverseThrusterStrength)
+        #     Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+        
+        # if (xboxControlId == 4):
+        #     #rotate towards the right
+        #     frontThrusterStrengthX = -1*value*50+150
+        #     reverseThrusterStrengthX = value*50+150
+        #     Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
+        #     Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
+        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
+        #     Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
+        #     pass
+        # if (xboxControlId == 5):
+        #     #rotate towards the left
+        #     frontThrusterStrengthX = value*50+150
+        #     reverseThrusterStrengthX = -1*value*50+150
+        #     Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
+        #     Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
+        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
+        #     Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
+        #     pass
         
         #robot thruster front / back / left / right movement
         
@@ -475,3 +528,25 @@ if __name__ == '__main__':
     finally:
         #stop the controller
         xboxCont.stop()
+
+
+"""
+
+100 back, forward is 200
+
+front back left right left dpad
+
+up and down
+spin right and left left and right triggers
+tilt left and right
+
+claw opening
+claw panning
+
+camera panning
+
+
+
+
+
+"""
