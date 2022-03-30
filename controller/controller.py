@@ -427,6 +427,7 @@ if __name__ == '__main__':
         reverseThrusterStrength = -1 * thrusterStrength
         
         if xboxControlId == 0: # left-right movement
+            print("Moving thrusters...")
             # for value of -100 to 0, move left
             # for value of 0 to 100, move right
             Controls.thrusterOn(frontLThruster, thrusterStrength)
@@ -436,6 +437,7 @@ if __name__ == '__main__':
             Controls.thrusterOn(backRThruster, thrusterStrength)
 
         if xboxControlId == 1: # front-back movement
+            print("Moving thrusters...")
             # for value of -100 to 0, move backward
             # for value of 0 to 100, move forward    
             Controls.thrusterOn(frontRThruster, thrusterStrength)
