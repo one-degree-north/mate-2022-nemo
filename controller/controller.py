@@ -424,17 +424,17 @@ if __name__ == '__main__':
         #move front, back, side, side
 
         thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-        reverseThrusterStrength = -1 * thrusterStrength
+        reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
         
         if xboxControlId == 0: # left-right movement
             print("Moving thrusters...")
             # for value of -100 to 0, move left
             # for value of 0 to 100, move right
-            Controls.thrusterOn(frontLThruster, thrusterStrength)
-            Controls.thrusterOn(backLThruster, thrusterStrength)
+            # Controls.thrusterOn(frontLThruster, thrusterStrength)
+            # Controls.thrusterOn(backLThruster, thrusterStrength)
 
-            Controls.thrusterOn(frontRThruster, thrusterStrength)
-            Controls.thrusterOn(backRThruster, thrusterStrength)
+            # Controls.thrusterOn(frontRThruster, thrusterStrength)
+            # Controls.thrusterOn(backRThruster, thrusterStrength)
 
         if xboxControlId == 1: # front-back movement
             print("Moving thrusters...")
