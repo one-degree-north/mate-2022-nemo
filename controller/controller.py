@@ -4,29 +4,25 @@ Works on Linux only
 
 Before running this script, xboxdrv should be running
 
-Left DPAD vertical is Y axis and control id is 1. Range -100 to 100
-Right DPAD horizontal is X axis and control id is 0. Range -100 to 100
+Buttons that are either pressed or not pressed (value = 0 or 1)
+A -> 6
+B -> 7
+X -> 8
+Y -> 9
 
-The cross shaped button is control id 17, up -> (0,1), down -> (0,-1), left -> (-1, 0), right...
+Right B -> 11
+Left B -> 10
 
-Right DPAD is not working. IDs 3 and 4
-
-A = 6
-B = 7
-8 = x
-y is 9
-
-
-right B is ID 11, either 1 or 0
-same for left B, which is ID 10
-
-left trigger is ID 2, -100 when not pressed, 100 when pressed
-right trigger is different for some reason. 0 when not pressed, 100 when pressed. ID is 5
+Cross-shaped button -> 17 [up/down: (0, ±1), right/left: (±1, 0)]
 
 
+Buttons that have many values (each usually ranges from 0 to 100)
+Right trigger -> 5 [100 when pressed, 0 when not pressed]
+Left trigger -> 2 [100 when pressed, -100 when not pressed]
 
-
-
+Left DPAD
+    Horizontal means X-axis -> 0 Ranges from -100(left) to 100 (right)
+    Vertical means Y-axis -> 1 Ranges from -100(down) to 100 (up)
 """
 
 
