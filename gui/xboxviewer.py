@@ -13,18 +13,6 @@ class Display:
     radius: Union[int, tuple[int, int]] # smaller then bigger radius for the float
     control_type: str
 
-colors = {
-    "a": {"off": "#008000", "on": "#6fc76f"},
-    "b": {"off": "#8f0707", "on": "#b56b6b"},
-    "x": {"off": "#162c7a", "on": "#6775a6"},
-    "y": {"off": "#999100", "on": "#ccc881"},
-}
-
-real_control_name = {
-    "6": "a",
-    "7": "b",
-}
-
 
 
 
@@ -67,14 +55,9 @@ class XboxViewer(Frame):
         self.abxy_buttons_canvas_item_ids = {}
         self.joystick_canvas_item_ids = {}
 
-        self.associated_pairs = {
-            "0": "1",
-            "1": "0"
-        }
 
         for cid in self.controls.keys():
             self.create_control(cid)
-
 
     def check_queue(self):
 
@@ -112,11 +95,11 @@ class XboxViewer(Frame):
             _color = ""
 
             if self.controls[cid].activation == 0:
-                rcn = real_control_name[cid]
-                _color = colors[rcn]["off"]
+                rcn = self.real_control_name[cid]
+                _color = self.colors[rcn]["off"]
             elif self.controls[cid].activation == 1:
-                rcn = real_control_name[cid]
-                _color = colors[rcn]["off"]
+                rcn = self.real_control_name[cid]
+                _color = self.colors[rcn]["off"]
 
             # print(_color)
 
@@ -152,10 +135,6 @@ class XboxViewer(Frame):
             print(f"Small circle created with {_id = }")
             self.joystick_canvas_item_ids[cid + "-"] = _id
 
-
-
-
-
     def edit_control(self, cid, val):
         if cid not in self.controls.keys():
             # print("cid not drawn to display yet")
@@ -166,54 +145,42 @@ class XboxViewer(Frame):
 
             if self.controls[cid].control_type == "abxy_button":
                 if val == 1:
-                    rcn = real_control_name[cid]
-                    _color = colors[rcn]["on"]
-                    outline = colors[rcn]["off"]
+                    rcn = self.real_control_name[cid]
+                    _color = self.colors[rcn]["on"]
+                    outline = self.colors[rcn]["off"]
                     self.c.itemconfig(self.abxy_buttons_canvas_item_ids[cid], fill=_color, outline=outline, width=2)
                 elif val == 0:
-                    rcn = real_control_name[cid]
-                    _color = colors[rcn]["off"]
+                    rcn = self.real_control_name[cid]
+                    _color = self.colors[rcn]["off"]
                     self.c.itemconfig(self.abxy_buttons_canvas_item_ids[cid], fill=_color, width=2)
 
             if self.controls[cid].control_type == "joystick":
-                self.shift_joystick(cid)
+                _id = self.get_joystick_id(cid)
+                coords = self.joystick_coords(cid)
+                self.c.coords(_id, coords[0], coords[1], coords[2], coords[3])
 
     def joystick_pixel_shift_amount(self, cid):
         # print(f"Acivation of {cid} = {self.controls[cid].activation}")
         return (self.controls[cid].activation / 100) * self.controls[cid].radius[0]
 
-    def shift_joystick(self, cid):
+    def joystick_coords(self, cid):
         pos = self.rel2abspos(cid)
         cc = self.corner_coords(pos, self.controls[cid].radius[0])
 
-        dx, dy = 0,0
+        dx, dy = 0, 0
         if cid == "0":
             dx = self.joystick_pixel_shift_amount(cid)
-            dy = self.joystick_pixel_shift_amount(self.associated_pairs[cid])
-
+            dy = self.joystick_pixel_shift_amount(self.associated_pair(cid))
         elif cid == "1":
-            dx = self.joystick_pixel_shift_amount(self.associated_pairs[cid])
             dy = self.joystick_pixel_shift_amount(cid)
-
+            dx = self.joystick_pixel_shift_amount(self.associated_pair(cid))
 
         x0, x1 = cc[0] + dx, cc[2] + dx
         y0, y1 = cc[1] - dy, cc[3] - dy
 
-        if cid == "1":
-            cid = "0"
-        _id = self.joystick_canvas_item_ids[cid + "-"]
-        self.c.coords(_id, x0, y0, x1, y1)
+        return (x0, y0, x1, y1)
 
     def move(self, event):
-        def clean_id(cid) -> str:
-            # print(f"Converted {cid = } to", end=" ")
-            if cid.endswith("+"):
-                # print(cid.replace("+", ""))
-                return cid.replace("+", "")
-            elif cid.endswith("-"):
-                # print(cid.replace("-", ""))
-                return cid.replace("-", "")
-        
         self.w = self.winfo_width()
         self.h = self.winfo_height()
         # print(self.w, self.h)
@@ -233,7 +200,7 @@ class XboxViewer(Frame):
         # print("Joystick items below: ")
         # print(self.joystick_canvas_item_ids)
         for cid in self.joystick_canvas_item_ids.keys():
-            ccid = clean_id(cid)
+            ccid = self.clean_id(cid)
             if ccid in cids_completed: # If a button has already been redrawn, skip to 
                 continue
 
@@ -246,26 +213,14 @@ class XboxViewer(Frame):
             _id = self.joystick_canvas_item_ids[ccid + "+"]
             self.c.coords(_id, x0, y0, x1, y1)
 
-            small_radius = self.controls[ccid].radius[0]
-            cc = self.corner_coords(pos, small_radius)
-            x0, y0, x1, y1 = cc[0], cc[1], cc[2], cc[3]
-            _id = self.joystick_canvas_item_ids[ccid + "-"]
-            self.c.coords(_id, x0, y0, x1, y1)
+            coords = self.joystick_coords(ccid)
+            _id = self.get_joystick_id(ccid)
+            self.c.coords(_id, coords[0], coords[1], coords[2], coords[3])
 
             cids_completed.append(ccid)
 
-        for cid in self.joystick_canvas_item_ids.keys():
-            cid = self.clean_id(cid)
-            self.shift_joystick(cid)
-
-
-
-            
-            
     def corner_coords(self, pos, r):
         return (pos[0] - r, pos[1] - r, pos[0] + r, pos[1] + r)
-            
-
 
     def rel2abspos(self, cid):
         x = self.w * self.controls[cid].pos[0]
@@ -282,6 +237,25 @@ class XboxViewer(Frame):
         elif cid.endswith("-"):
             # print(cid.replace("-", ""))
             return cid.replace("-", "")
+
+    def associated_pair(self, cid):
+        # Left joystick
+        if cid == "1":
+            return "0"
+        if cid == "0":
+            return "1"
+        
+        return None
+    
+    def get_joystick_id(self, cid): # Returns id of smaller joystick circle
+        if (cid + "-") in self.joystick_canvas_item_ids.keys():
+            return self.joystick_canvas_item_ids[cid + "-"]
+        
+        elif self.associated_pair(cid) != None:
+            print(self.joystick_canvas_item_ids)
+            print(f"{cid}'s {self.associated_pair(cid) = }")
+            return self.joystick_canvas_item_ids[self.associated_pair(cid) + "-"]
+
     
 
 
