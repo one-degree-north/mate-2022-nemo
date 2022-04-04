@@ -27,10 +27,12 @@ Adafruit_DotStar strip(1, LEDDATAPIN, LEDCLOCKPIN, DOTSTAR_BRG);
 int thrusterPins[] = {7, 9, 10, 11, 12, 13};
 //5 dead?
 
+//#define Serial Serial1
+
 Servo thrusterServos[6];
 
-int clawPins[] = {A2, 9};
-Servo clawServos[2];
+int clawPins[] = {A4, A5, 2};
+Servo clawServos[3];
 
 
 int thrusterServoSpeeds[1] = {1500};
@@ -66,11 +68,12 @@ Adafruit_BNO055 bnoIMU = Adafruit_BNO055(55);
 
 
 void setup(){
+  //Serial.print("resign");
   for (int i = 0; i < 6; i++){
     thrusterServos[i].attach(thrusterPins[i]);
   }
 
-  for (int i = 0; i < 2; i++){
+  for (int i = 0; i < 3; i++){
     clawServos[i].attach(clawPins[i]);
   }
   
@@ -103,36 +106,35 @@ void readInputsDebug2(){
   if (Serial.available()){
     char input = Serial.read();
     if (input == '0'){
-      moveThruster(0, 170);
+      setAutoReport(0x1E, 1000);
     }
     if (input == '1'){
-      thrusterServos[0].writeMicroseconds(1700);
+      moveClaw(1, 45);
     }
     else if (input == '2'){
-      thrusterServos[1].writeMicroseconds(1700);
+      moveClaw(1, 91);
     }
     else if (input == '3'){
-      thrusterServos[2].writeMicroseconds(1700);
+      moveClaw(1, 135);
     }
 
     else if (input == '4'){
-      thrusterServos[3].writeMicroseconds(1700);
+      moveClaw(1, 181);
     }
     else if (input == '5'){
-      thrusterServos[4].writeMicroseconds(1700);
+      moveClaw(1, 225);
     }
     else if (input == '6')
-      thrusterServos[5].writeMicroseconds(1700);
+      moveClaw(1, 271);
 
     else if (input == '7')
-      sendTemperature();
+      moveClaw(1, 315);
 
     else if (input == '8'){
-      setAutoReport(0x1C, 1000);
-      setAutoReport(0x1E, 1000);
+      moveThruster(0, 150);
     }
     else if (input == '9'){
-      setAutoReport(0x1E, 1000);
+      moveThruster(0, 170);
     }
     Serial.println("---");
   }
@@ -194,6 +196,7 @@ void sendSensorData(){
     sensorTimes[i] -= deltaTime;
     if (sensorTimes[i] <= 0){
       //Serial.write("D");
+      //Serial.write("AAAAAAAA");
       switch(i){
         case 0:
           //Serial.write("C");
@@ -363,12 +366,16 @@ void moveThruster(int selectedThruster, int selectedSpeed){
 }
 
 void moveClaw(int selectedClaw, int deg){
-  if (selectedClaw == 0){
+  //180 goes to 360, 90 goes to 180
+  clawServos[selectedClaw].write(deg);
+  /*if (selectedClaw == 0){
     clawServos[0].write(deg);
+  }
+  else if (selectedClaw == 1){
   }
   else{
     clawServos[1].write(deg);
-  }
+  }*/
    
 }
 
