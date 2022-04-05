@@ -419,6 +419,9 @@ if __name__ == '__main__':
         
         #move front, back, side, side
 
+
+        #Probably good one
+        """
         thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
         reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
         
@@ -441,7 +444,7 @@ if __name__ == '__main__':
 
             Controls.thrusterOn(backRThruster, thrusterStrength)
             Controls.thrusterOn(backLThruster, thrusterStrength)
-
+        """
 
         
 
