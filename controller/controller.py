@@ -29,6 +29,7 @@ Left DPAD
 
 import pygame
 from pygame.locals import *
+from pygame.time import Clock
 import os, sys
 import threading
 import time
@@ -37,7 +38,7 @@ from controls import Controls
 # os.system("sudo jstest /dev/input/js0")
 # Probably shouldn't run this thingy
 
-
+pygame.time
 """
 NOTES - pygame events and values
 
@@ -299,10 +300,10 @@ class XboxController(threading.Thread):
 
                 # Thumb sticks, trigger buttons                    
                 if event.type == JOYAXISMOTION:
-                    print("Button A")
+
                     # Is this axis on our xbox controller
                     if event.axis in self.AXISCONTROLMAP:
-                        print("Button A subtype 1")
+
                         # Is this a y axis
                         yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
                         # Update the control value
@@ -310,23 +311,23 @@ class XboxController(threading.Thread):
                                                 self._sortOutAxisValue(event.value, yAxis))
                     # Is this axis a trigger
                     if event.axis in self.TRIGGERCONTROLMAP:
-                        print("Button type 2")
+
                         # Update the control value
                         self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
                                                 self._sortOutTriggerValue(event.value))
                         
                 # D pad
                 elif event.type == JOYHATMOTION:
-                    print("Button B")
+
                     # Update control value
                     self.updateControlValue(self.XboxControls.DPAD, event.value)
 
                 # Button pressed and unpressed
                 elif event.type == JOYBUTTONUP or event.type == JOYBUTTONDOWN:
-                    print("Button C")
+
                     # Is this button on our xbox controller
                     if event.button in self.BUTTONCONTROLMAP:
-                        print("Button C subtype")
+
                         # Update control value
                         self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
                                                 self._sortOutButtonValue(event.type))
@@ -382,17 +383,26 @@ class XboxController(threading.Thread):
     
 #tests
 if __name__ == '__main__':
-    frontLThruster = 0
+    frontLThruster = 1
     frontRThruster = 0
-    midLThruster = 0
-    midRThruster = 0
-    backLThruster = 0
-    backRThruster = 0
+    midLThruster = 2
+    midRThruster = 5
+    backLThruster = 4
+    backRThruster = 3
+    cameraServo = 0
+    clawRotateServo = 1
+    clawServo = 2
     topSpeed = 200
     minSpeed = 100
     controls = Controls()
     #generic call back
     def controlCallBack(xboxControlId, value):
+
+        if value > 200:
+            value = int(200)
+        elif value < 0:
+            value = int(0)
+        
         print(f"Control Id = {xboxControlId}, Value = {value}")
     
         """0 - x axis left thumb   (+1 is right, -1 is left)
@@ -424,14 +434,10 @@ if __name__ == '__main__':
         #Probably good one
         #thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
         #reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
-        
-        if xboxControlId == 0: # left-right movement
-            print("Moving thrusters...")
-            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
-            print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
-            # for value of -100 to 0, move backward
-            # for value of 0 to 100, move forward    
+        thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+        reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+
+        if xboxControlId == 0: # left-right movement  
             controls.thrusterOn(frontRThruster, thrusterStrength)
             controls.thrusterOn(frontLThruster, thrusterStrength)
 
@@ -439,25 +445,39 @@ if __name__ == '__main__':
             controls.thrusterOn(backLThruster, thrusterStrength)
 
         if xboxControlId == 1: # front-back movement
-            print("Moving thrusters...")
-            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
-            print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
-            # for value of -100 to 0, move backward
-            # for value of 0 to 100, move forward    
             controls.thrusterOn(frontRThruster, reverseThrusterStrength)
             controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+
             controls.thrusterOn(backRThruster, reverseThrusterStrength)
             controls.thrusterOn(backLThruster, reverseThrusterStrength)
 
+
+        if xboxControlId == 17: # up-down movement
+            # thrusterStrength = 50 * value[1] + 150
+            if value[1] > 0:
+                controls.thrusterOn(midLThruster, 200)    
+                controls.thrusterOn(midRThruster, 200)
+            elif value[0] < 0:
+                controls.thrusterOn(midLThruster, 100)    
+                controls.thrusterOn(midRThruster, 100)
+
+            if value[0] > 0: # tilting
+                controls.thrusterOn(midLThruster, 200) # tilt to the right
+            elif value[0] < 0: # tilt to the left
+                controls.thrusterOn(midRThruster, 200)
+
         if xboxControlId == 2:
-            pass
+            thrusterStrength = (value + 100) / 4 + 150
+            reverseThrusterStrength = 150 - (value + 100) / 4 
 
-        
+            controls.thrusterOn(frontRThruster, thrusterStrength)
+            controls.thrusterOn(backRThruster, thrusterStrength)
 
+            controls.thrusterOn(backLThruster, reverseThrusterStrength)
+            controls.thrusterOn(frontLThruster, reverseThrusterStrength)
 
-
-
+        if xboxControlId == 5:
+            thrusterStrength = (value + 100) / 4
         # if (xboxControlId == 2):
         #     #side
         #     thrusterStrength = value*50+150
