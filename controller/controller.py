@@ -390,6 +390,7 @@ if __name__ == '__main__':
     backRThruster = 0
     topSpeed = 200
     minSpeed = 100
+    controls = Controls()
     #generic call back
     def controlCallBack(xboxControlId, value):
         print(f"Control Id = {xboxControlId}, Value = {value}")
@@ -431,11 +432,11 @@ if __name__ == '__main__':
             print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
             # for value of -100 to 0, move backward
             # for value of 0 to 100, move forward    
-            Controls.thrusterOn(frontRThruster, thrusterStrength)
-            Controls.thrusterOn(frontLThruster, thrusterStrength)
+            controls.thrusterOn(frontRThruster, thrusterStrength)
+            controls.thrusterOn(frontLThruster, thrusterStrength)
 
-            Controls.thrusterOn(backRThruster, thrusterStrength)
-            Controls.thrusterOn(backLThruster, thrusterStrength)
+            controls.thrusterOn(backRThruster, thrusterStrength)
+            controls.thrusterOn(backLThruster, thrusterStrength)
 
         if xboxControlId == 1: # front-back movement
             print("Moving thrusters...")
@@ -444,10 +445,10 @@ if __name__ == '__main__':
             print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
             # for value of -100 to 0, move backward
             # for value of 0 to 100, move forward    
-            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
-            Controls.thrusterOn(backRThruster, reverseThrusterStrength)
-            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+            controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+            controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+            controls.thrusterOn(backRThruster, reverseThrusterStrength)
+            controls.thrusterOn(backLThruster, reverseThrusterStrength)
 
         if xboxControlId == 2:
             pass
