@@ -32,7 +32,7 @@ from pygame.locals import *
 import os, sys
 import threading
 import time
-from main import Controls
+from controls import Controls
 # Start xboxdrv
 # os.system("sudo jstest /dev/input/js0")
 # Probably shouldn't run this thingy
@@ -421,22 +421,14 @@ if __name__ == '__main__':
 
 
         #Probably good one
-        """
-        thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-        reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+        #thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+        #reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
         
         if xboxControlId == 0: # left-right movement
             print("Moving thrusters...")
-            # for value of -100 to 0, move left
-            # for value of 0 to 100, move right
-            # Controls.thrusterOn(frontLThruster, thrusterStrength)
-            # Controls.thrusterOn(backLThruster, thrusterStrength)
-
-            # Controls.thrusterOn(frontRThruster, thrusterStrength)
-            # Controls.thrusterOn(backRThruster, thrusterStrength)
-
-        if xboxControlId == 1: # front-back movement
-            print("Moving thrusters...")
+            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+            print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
             # for value of -100 to 0, move backward
             # for value of 0 to 100, move forward    
             Controls.thrusterOn(frontRThruster, thrusterStrength)
@@ -444,9 +436,21 @@ if __name__ == '__main__':
 
             Controls.thrusterOn(backRThruster, thrusterStrength)
             Controls.thrusterOn(backLThruster, thrusterStrength)
-        """
 
-        
+        if xboxControlId == 1: # front-back movement
+            print("Moving thrusters...")
+            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+            print(f"thruster strength = {thrusterStrength} reverseThruster strength = {reverseThrusterStrength}")
+            # for value of -100 to 0, move backward
+            # for value of 0 to 100, move forward    
+            Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+            Controls.thrusterOn(backRThruster, reverseThrusterStrength)
+            Controls.thrusterOn(backLThruster, reverseThrusterStrength)
+
+        if xboxControlId == 2:
+            pass
 
         
 
@@ -496,7 +500,13 @@ if __name__ == '__main__':
         
         #robot adjust sensor? (is this needed?)
 
-
+    def moveSide(thrusterStrength):
+        
+        pass
+    def moveFront(thrusterStrength):
+        pass
+    def moveUp(thrusterStrength):
+        pass
     #specific callbacks for the left thumb (X & Y)
     def leftThumbX(xValue):
         print(f"LX {xValue}")
