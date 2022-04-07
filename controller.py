@@ -445,18 +445,20 @@ if __name__ == '__main__':
         reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
 
         if xboxControlId == 0: # left-right movement  
-            controls.thrusterOn(frontRThruster, thrusterStrength)
-            controls.thrusterOn(frontLThruster, thrusterStrength)
+            print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
+            controls.thrusterOn(frontRThruster, int(thrusterStrength))
+            controls.thrusterOn(frontLThruster, int(thrusterStrength))
 
-            controls.thrusterOn(backRThruster, thrusterStrength)
-            controls.thrusterOn(backLThruster, thrusterStrength)
+            controls.thrusterOn(backRThruster, int(thrusterStrength))
+            controls.thrusterOn(backLThruster, int(thrusterStrength))
 
         if xboxControlId == 1: # front-back movement
-            controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-            controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+            print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
+            controls.thrusterOn(frontRThruster, int(reverseThrusterStrength))
+            controls.thrusterOn(frontLThruster, int(reverseThrusterStrength))
 
-            controls.thrusterOn(backRThruster, reverseThrusterStrength)
-            controls.thrusterOn(backLThruster, reverseThrusterStrength)
+            controls.thrusterOn(backRThruster, int(reverseThrusterStrength))
+            controls.thrusterOn(backLThruster, int(reverseThrusterStrength))
 
 
         if xboxControlId == 17: # up-down movement
@@ -472,11 +474,20 @@ if __name__ == '__main__':
                 controls.thrusterOn(midLThruster, 200) # tilt to the right
             elif value[0] < 0: # tilt to the left
                 controls.thrusterOn(midRThruster, 200)
+            
+            #reset, CHANGE THIS
+            if value[0] == 0:
+                controls.thrusterOn(midLThruster, 150)
+                controls.thrusterOn(midRThruster, 150)
+            if value[1] == 0:
+                controls.thrusterOn(midLThruster, 150)
+                controls.thrusterOn(midLThruster, 150)
 
         if xboxControlId == 2: # rotating to the left
             thrusterStrength = (value + 100) / 4 + 150
             reverseThrusterStrength = 150 - (value + 100) / 4 
 
+            print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
             controls.thrusterOn(backRThruster, int(thrusterStrength))
 
@@ -487,6 +498,7 @@ if __name__ == '__main__':
             thrusterStrength = value / 2 + 150
             reverseThrusterStrength = 150 - value / 2
 
+            print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontLThruster, int(thrusterStrength))
             controls.thrusterOn(backLThruster, int(thrusterStrength))
 
@@ -498,19 +510,20 @@ if __name__ == '__main__':
             controls.setClawDeg(clawServo, 89)
 
         if xboxControlId == 7: # opent he claw
-            controls.setClawDeg(clawServo, 0)
+            controls.setClawDeg(clawServo, 1)
 
+        """
         if xboxControlId == 9: #idk what 9 corresponds to , change later
             #assuming value of 1 is pressed, value of 0 is released
-            """if (currClawRotateDeg > 180):
+            if (currClawRotateDeg > 180):
                 currClawRotateDeg = 180
             if (currClawRotateDeg < 0):
-                currClawRotateDeg = 0"""
+                currClawRotateDeg = 0
             if (value == 1):
                 controls.rotateRotateServo = True
             if (value == 0):
                 controls.rotateRotateServo = False
-            pass
+            pass"""
     
 
 
