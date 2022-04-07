@@ -399,6 +399,7 @@ if __name__ == '__main__':
     rotateRight = False
     rotateLeft = False
     controls = Controls()
+    controls.startThread()
     #generic call back
     def controlCallBack(xboxControlId, value):
 
