@@ -501,11 +501,14 @@ if __name__ == '__main__':
 
         if xboxControlId == 9: #idk what 9 corresponds to , change later
             #assuming value of 1 is pressed, value of 0 is released
-            if (currClawRotateDeg > 180):
+            """if (currClawRotateDeg > 180):
                 currClawRotateDeg = 180
             if (currClawRotateDeg < 0):
-                currClawRotateDeg = 0
-            
+                currClawRotateDeg = 0"""
+            if (value == 1):
+                controls.rotateRotateServo = True
+            if (value == 0):
+                controls.rotateRotateServo = False
             pass
     
 

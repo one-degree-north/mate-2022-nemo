@@ -23,8 +23,8 @@ class Comms:
         currByte = self.arduinoSerial.read()
         footerFound = False
         headerFound = False
-        print("currByte")
-        print(currByte)
+        #print("currByte")
+        #print(currByte)
         while (not headerFound):
             if (currByte == self.HEADER):
                 headerFound = True
@@ -33,7 +33,7 @@ class Comms:
                     footerFound=True
                     break
             currByte = self.arduinoSerial.read()
-        print(returnValue)
+        #print(returnValue)
         if (len(returnValue) != 7):
             return -1
         structValue = struct.unpack("=ccfc", returnValue)
@@ -44,7 +44,7 @@ class Comms:
                 return -1
 
     def write(self, command, params):
-        print("writing")
+        #print("writing")
         #print(command)
         #print(params)
         self.arduinoSerial.write(self.HEADER)

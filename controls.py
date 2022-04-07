@@ -18,6 +18,7 @@ class Controls:
 
         #should I implement claw rotating this way?
         self.rotateRotateServo = False
+        self.rotateClockwise = True
         self.loopStartTime = time.time()
         self.rotateSpeed = 5
         self.currRotateDeg = 0
@@ -34,7 +35,7 @@ class Controls:
         print("start thread")
 
     def thrusterOn(self, motor, speed):
-        self.outputQueue.put((0x20), [motor, speed])
+        self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])
 
     def thrusterOff(self, motor):
@@ -129,7 +130,10 @@ class Controls:
 
     def rotateContinuously(self):
         #doesn't warrent creating an entirely new class for commands yet
-        self.currRotateDeg += self.rotateSpeed * self.deltaTime
+        if (self.rotateClockwise):
+            self.currRotateDeg += self.rotateSpeed * self.deltaTime
+        else:
+            self.currRotateDeg -= self.rotateSpeed * self.deltaTime
         if (self.currRotateDeg < 0):
             self.currRotateDeg = 0
         if (self.currRotateDeg > 180):
