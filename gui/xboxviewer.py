@@ -72,7 +72,7 @@ class XboxViewer(Frame):
                 "6": {"on": "#a9ff94", "off": "#00b315"},
                 "7": {"on": "#ff9494", "off": "#b30000"},
                 "8": {"on": "#949bff", "off": "#004eb3"},
-                "9": {"on": "#fdff94", "off": "#b0b300"},
+                "9": {"on": "#fdff94", "off": "#d6d61c"},
             }
 
         def dip_paintbrush(self):
@@ -128,7 +128,7 @@ class XboxViewer(Frame):
             print(bcc, scc)
 
             b = self.canvas.create_oval(bcc[0], bcc[1], bcc[2], bcc[3], fill=self.palette["big"], width=0)
-            s = self.canvas.create_oval(scc[0], scc[1], scc[2], scc[3], fill=self.palette["small"], width=2, outline=self.palette["outline"])
+            s = self.canvas.create_oval(scc[0], scc[1], scc[2], scc[3], fill=self.palette["small"], width=3, outline=self.palette["outline"])
             self.canvas_id = (s, b)
 
         def shift(self):
@@ -143,6 +143,100 @@ class XboxViewer(Frame):
                 scc = self.joystick_coords()
                 self.canvas.coords(self.canvas_id[0], scc[0], scc[1], scc[2], scc[3])
 
+    class Trigger(Control):
+        def __init__(self, frame_in, canvas, cid, relpos, radius, activation):
+            """
+            In this case, radius[0] is the width, radius[1] is the height
+            """
+            super().__init__(frame_in, canvas, cid, relpos, radius, activation)
+            self.palette = {
+                "bar": "#9c9c9c",
+                "fill": "#32a852"
+            }
+
+        def create(self):
+            bar_cc = self.corner_coords()
+            fill_cc = self.fill_coords()
+            print(bar_cc, fill_cc)
+            
+            bar = self.canvas.create_rectangle(bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3], fill=self.palette["bar"], width=0)
+            fill = self.canvas.create_rectangle(fill_cc[0], fill_cc[1], fill_cc[2], fill_cc[3], fill=self.palette["fill"], width=0)
+
+            self.canvas_id = (fill, bar)
+
+        def shift(self):
+            bar_cc = self.corner_coords()
+            fill_cc = self.fill_coords()
+
+            self.canvas.coords(self.canvas_id[1], bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3])
+            self.canvas.coords(self.canvas_id[0], fill_cc[0], fill_cc[1], fill_cc[2], fill_cc[3])
+
+        def edit(self, val):
+            if self.activation != val:
+                self.activation = val
+
+                bar_cc = self.corner_coords()
+                fill_cc = self.fill_coords()
+
+                self.canvas.coords(self.canvas_id[1], bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3])
+                self.canvas.coords(self.canvas_id[0], fill_cc[0], fill_cc[1], fill_cc[2], fill_cc[3])
+
+        def corner_coords(self):
+            x0 = self.rel2abspos()[0] - self.radius[0]
+            x1 = self.rel2abspos()[0] + self.radius[0]
+            y0 = self.rel2abspos()[1] - self.radius[1]
+            y1 = self.rel2abspos()[1] + self.radius[1]
+            return (x0, y0, x1, y1)
+
+        def fill_amount(self):
+            return 2 * self.radius[0] - self.activation / 100 * self.radius[0] * 2
+
+        def fill_coords(self):
+            cc = self.corner_coords()
+            amount = self.fill_amount()
+            # print(amount)
+            x0 = cc[0]
+            x1 = cc[2] - amount
+            y0 = cc[1]
+            y1 = cc[3]
+            return (x0, y0, x1, y1)
+
+    class Bumper(Control):
+        def __init__(self, frame_in, canvas, cid, relpos, radius, activation):
+            super().__init__(frame_in, canvas, cid, relpos, radius, activation)
+            self.palette = {
+                "on": "#1b8019",
+                "off": "#7d7d7d"
+            }
+
+
+        def dip_paintbrush(self):
+            if self.activation == 0:
+                return self.palette["off"]
+            if self.activation == 1:
+                return self.palette["on"]
+
+        def create(self):
+            cc = self.corner_coords()
+            
+            bar = self.canvas.create_rectangle(cc[0], cc[1], cc[2], cc[3], fill=self.dip_paintbrush(), width=0)
+            self.canvas_id = bar
+
+        def shift(self):
+            cc = self.corner_coords()
+            self.canvas.coords(self.canvas_id, cc[0], cc[1], cc[2], cc[3])
+
+        def edit(self, val):
+            if self.activation != val:
+                self.activation = val
+                self.canvas.itemconfig(self.canvas_id, fill=self.dip_paintbrush())
+
+        def corner_coords(self):
+            x0 = self.rel2abspos()[0] - self.radius[0]
+            x1 = self.rel2abspos()[0] + self.radius[0]
+            y0 = self.rel2abspos()[1] - self.radius[1]
+            y1 = self.rel2abspos()[1] + self.radius[1]
+            return (x0, y0, x1, y1)
 
     def __init__(self, parent, q, **kwargs):
         Frame.__init__(self, parent, **kwargs)
@@ -153,10 +247,23 @@ class XboxViewer(Frame):
         self.q: queue.Queue = q
         self.c: Canvas = Canvas(self, bg="white", width=500, height=500)
 
-        self.test = self.Joystick(self, self.c, ("0", "1"), (0.5, 0.5), (20, 30), (0, 0))
+        self.test = self.Bumper(self, self.c, "10", (0.5, 0.5), (50, 5), 1)
         self.test.create()
-        self.test.edit((100,-100))
+        self.test.edit(1)
+        self.test2 = self.Trigger(self, self.c, "11", (0.75, 0.75), (50, 10), 100)
+        self.test2.create()
+        self.test2.edit(50)
 
+        self.test3 = self.Joystick(self, self.c, ("0", "1"), (0.25, 0.25), (30, 50), (45, -89))
+        self.test3.create()
+
+        self.test4 = self.ABXY(self, self.c, "6", (0.75, 0.25), 15, 1)
+        self.test4.create()
+
+        self.test5 = self.ABXY(self, self.c, "9", (0.25, 0.75), 15, 1)
+        self.test5.create()
+        self.after(10000, self.test4.edit, 0)
+        self.after(10000, self.test5.edit, 0)
 
 
         self.c.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
