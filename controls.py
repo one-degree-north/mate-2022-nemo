@@ -22,7 +22,7 @@ class Controls:
         self.loopStartTime = time.time()
         self.rotateSpeed = 5
         self.currRotateDeg = 0
-        self.deltaTime = 0;
+        self.deltaTime = 0
         
         self.cameraServo = 0
         self.clawRotateServo = 1

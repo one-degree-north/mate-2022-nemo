@@ -476,21 +476,21 @@ if __name__ == '__main__':
             thrusterStrength = (value + 100) / 4 + 150
             reverseThrusterStrength = 150 - (value + 100) / 4 
 
-            controls.thrusterOn(frontRThruster, thrusterStrength)
-            controls.thrusterOn(backRThruster, thrusterStrength)
+            controls.thrusterOn(frontRThruster, int(thrusterStrength))
+            controls.thrusterOn(backRThruster, int(thrusterStrength))
 
-            controls.thrusterOn(backLThruster, reverseThrusterStrength)
-            controls.thrusterOn(frontLThruster, reverseThrusterStrength)
+            controls.thrusterOn(backLThruster, int(reverseThrusterStrength))
+            controls.thrusterOn(frontLThruster, int(reverseThrusterStrength))
 
         if xboxControlId == 5: # rotating to the right
             thrusterStrength = value / 2 + 150
             reverseThrusterStrength = 150 - value / 2
 
-            controls.thrusterOn(frontLThruster, thrusterStrength)
-            controls.thrusterOn(backLThruster, thrusterStrength)
+            controls.thrusterOn(frontLThruster, int(thrusterStrength))
+            controls.thrusterOn(backLThruster, int(thrusterStrength))
 
-            controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-            controls.thrusterOn(backRThruster, reverseThrusterStrength)
+            controls.thrusterOn(frontRThruster, int(reverseThrusterStrength))
+            controls.thrusterOn(backRThruster, int(reverseThrusterStrength))
 
 
         if xboxControlId == 6: # close the claw

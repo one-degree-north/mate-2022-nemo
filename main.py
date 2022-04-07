@@ -87,5 +87,5 @@ if(__name__ == "__main__"):
     #main()
     #testServo()
     #testCommThreading()
-    testThruster()
-    #testServo2()
+    #testThruster()
+    testServo2()

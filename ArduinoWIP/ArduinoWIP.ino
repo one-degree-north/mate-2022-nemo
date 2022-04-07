@@ -1,3 +1,5 @@
+#define Serial Serial1
+
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LIS3DH.h>
