@@ -402,6 +402,8 @@ if __name__ == '__main__':
             value = int(200)
         elif value < 0:
             value = int(0)
+        else:
+            value = int(value)
         
         print(f"Control Id = {xboxControlId}, Value = {value}")
     
@@ -454,10 +456,10 @@ if __name__ == '__main__':
 
         if xboxControlId == 17: # up-down movement
             # thrusterStrength = 50 * value[1] + 150
-            if value[1] > 0:
+            if value[1] > 0: # move up
                 controls.thrusterOn(midLThruster, 200)    
                 controls.thrusterOn(midRThruster, 200)
-            elif value[0] < 0:
+            elif value[0] < 0: # move down
                 controls.thrusterOn(midLThruster, 100)    
                 controls.thrusterOn(midRThruster, 100)
 
@@ -466,7 +468,7 @@ if __name__ == '__main__':
             elif value[0] < 0: # tilt to the left
                 controls.thrusterOn(midRThruster, 200)
 
-        if xboxControlId == 2:
+        if xboxControlId == 2: # rotating to the left
             thrusterStrength = (value + 100) / 4 + 150
             reverseThrusterStrength = 150 - (value + 100) / 4 
 
@@ -476,50 +478,36 @@ if __name__ == '__main__':
             controls.thrusterOn(backLThruster, reverseThrusterStrength)
             controls.thrusterOn(frontLThruster, reverseThrusterStrength)
 
-        if xboxControlId == 5:
-            thrusterStrength = (value + 100) / 4
-        # if (xboxControlId == 2):
-        #     #side
-        #     thrusterStrength = value*50+150
-        #     reverseThrusterStrength = -1*value*50+150
-        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-        #     Controls.thrusterOn(backRThruster, thrusterStrength)
-        #     Controls.thrusterOn(frontLThruster, thrusterStrength)
-        #     Controls.thrusterOn(backLThruster, reverseThrusterStrength)
-        #     pass
-        # if (xboxControlId == 3):
-        #     #front / back
-        #     thrusterStrength = value*50+150
-        #     reverseThrusterStrength = -1*value*50+150
-        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrength)
-        #     Controls.thrusterOn(frontLThruster, reverseThrusterStrength)
-        #     Controls.thrusterOn(backRThruster, reverseThrusterStrength)
-        #     Controls.thrusterOn(backLThruster, reverseThrusterStrength)
-        
-        # if (xboxControlId == 4):
-        #     #rotate towards the right
-        #     frontThrusterStrengthX = -1*value*50+150
-        #     reverseThrusterStrengthX = value*50+150
-        #     Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
-        #     Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
-        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
-        #     Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
-        #     pass
-        # if (xboxControlId == 5):
-        #     #rotate towards the left
-        #     frontThrusterStrengthX = value*50+150
-        #     reverseThrusterStrengthX = -1*value*50+150
-        #     Controls.thrusterOn(frontLThruster, frontThrusterStrengthX)
-        #     Controls.thrusterOn(backRThruster, frontThrusterStrengthX)
-        #     Controls.thrusterOn(frontRThruster, reverseThrusterStrengthX)
-        #     Controls.thrusterOn(backLThruster, reverseThrusterStrengthX)
-        #     pass
-        
-        #robot thruster front / back / left / right movement
-        
-        #robot claw
-        
-        #robot adjust sensor? (is this needed?)
+        if xboxControlId == 5: # rotating to the right
+            thrusterStrength = value / 2 + 150
+            reverseThrusterStrength = 150 - value / 2
+
+            controls.thrusterOn(frontLThruster, thrusterStrength)
+            controls.thrusterOn(backLThruster, thrusterStrength)
+
+            controls.thrusterOn(frontRThruster, reverseThrusterStrength)
+            controls.thrusterOn(backRThruster, reverseThrusterStrength)
+
+
+        if xboxControlId == 6: # close the claw
+            pass
+
+        if xboxControlId == 7: # opent he claw
+            pass
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
     def moveSide(thrusterStrength):
         

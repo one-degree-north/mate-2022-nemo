@@ -23,12 +23,11 @@ class CameraFeed(tk.Label):
         self.parent = parent
         self.camera_num = camera_num
         self.pack()
-
+        self.capture = cv2.VideoCapture(self.camera_num)
         self.start_camera()
 
     def start_camera(self):
-        # Get single frame from camera
-        self.capture = cv2.VideoCapture(self.camera_num)
+        # Get single frame from self.capture
         cv2image = cv2.cvtColor(self.capture.read()[1], cv2.COLOR_BGR2RGB)
         self.image = Image.fromarray(cv2image)
         
