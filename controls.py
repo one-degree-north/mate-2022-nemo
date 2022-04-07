@@ -1,5 +1,7 @@
 from comms import Comms
 import queue
+#import asyncio
+import time
 
 class Controls:
     def __init__(self):
@@ -13,6 +15,19 @@ class Controls:
         self.clawClosedDeg = 80
         self.outputQueue = queue.Queue()
         self.comms = Comms(outputQueue=self.outputQueue, controls=self)
+
+        #should I implement claw rotating this way?
+        self.rotateRotateServo = False
+        self.loopStartTime = time.time()
+        self.rotateSpeed = 5
+        self.currRotateDeg = 0
+        self.deltaTime = 0;
+        
+        self.cameraServo = 0
+        self.clawRotateServo = 1
+        self.clawServo = 2
+        
+
 
     def startThread(self):
         self.comms.startThread()
@@ -104,6 +119,22 @@ class Controls:
             self.gyroData[1] = returnBytes[2]
         elif(returnBytes[1] == bytes.fromhex("60")):
             self.gyroData[2] = returnBytes[2]
+
+    def loop(self):
+        loopStartTime = time.time()
+        self.deltaTime = loopStartTime-self.startTime
+        if (self.rotateRotateServo):
+            self.rotateContinuously()
+        self.startTime = loopStartTime
+
+    def rotateContinuously(self):
+        #doesn't warrent creating an entirely new class for commands yet
+        self.currRotateDeg += self.rotateSpeed * self.deltaTime
+        if (self.currRotateDeg < 0):
+            self.currRotateDeg = 0
+        if (self.currRotateDeg > 180):
+            self.currRotateDeg = 180
+        self.setClawDeg(self.clawRotateServo, self.currRotateDeg)
 
     """def testCommControlQueue(self):
 

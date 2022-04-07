@@ -3,8 +3,7 @@ from controls import Controls
 import time, queue
 
 def main():
-    comms = Comms()
-    controls = Controls(comms)
+    controls = Controls()
     controls.setAutoReport(command=0x1C)
     controls.setAutoReport(command=0x1E)
 
