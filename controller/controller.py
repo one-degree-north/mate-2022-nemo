@@ -394,6 +394,10 @@ if __name__ == '__main__':
     clawServo = 2
     topSpeed = 200
     minSpeed = 100
+    currClawDeg = 0
+    currClawRotateDeg = 0
+    rotateRight = False
+    rotateLeft = False
     controls = Controls()
     #generic call back
     def controlCallBack(xboxControlId, value):
@@ -490,11 +494,19 @@ if __name__ == '__main__':
 
 
         if xboxControlId == 6: # close the claw
-            pass
+            controls.setClawDeg(clawServo, 89)
 
         if xboxControlId == 7: # opent he claw
-            pass
+            controls.setClawDeg(clawServo, 0)
 
+        if xboxControlId == 9: #idk what 9 corresponds to , change later
+            #assuming value of 1 is pressed, value of 0 is released
+            if (currClawRotateDeg > 180):
+                currClawRotateDeg = 180
+            if (currClawRotateDeg < 0):
+                currClawRotateDeg = 0
+            
+            pass
     
 
 
