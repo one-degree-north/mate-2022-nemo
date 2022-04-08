@@ -214,11 +214,11 @@ def on_release(key):
     if char == "e":
         if claw_is_clamped:
             print("unclamping")
-            # controls.setClawDeg(clawServo, 89)
+            controls.setClawDeg(clawServo, 89)
             claw_is_clamped = False
         else:
             print("clamping")
-            # controls.setClawDeg(clawServo, 1)
+            controls.setClawDeg(clawServo, 1)
             claw_is_clamped = True
 
     power()
