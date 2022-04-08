@@ -57,7 +57,7 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "o":[50, -50]
 }
 
-accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x"]
 wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
 ikuo_keys = ["i", "k", "u", "o"]
 
@@ -157,8 +157,15 @@ def on_press(key):
         is_down[char] = True
     else:
         return
+    if char == "x":
+        controls.thrusterOn(frontLThruster, 0)
+        controls.thrusterOn(frontRThruster, 0)
+        controls.thrusterOn(backLThruster, 0)
+        controls.thrusterOn(backRThruster, 0)
+        controls.thrusterOn(midLThruster, 0)
+        controls.thrusterOn(midRThruster, 0)
 
-    if char == "1":
+    elif char == "1":
         if currClawRotateDeg - 10 < 0:
             currClawRotateDeg = 0
         else:
