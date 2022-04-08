@@ -53,6 +53,7 @@ class Controls:
 
     def thrusterOn(self, motor, speed):
         #Testing, having the input between -50 and 50 instead
+        speed *= -1
         speed += 150
         speed = int(speed)
         if (speed > 200):
