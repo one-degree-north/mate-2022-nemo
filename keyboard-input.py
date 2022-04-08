@@ -29,6 +29,9 @@ is_down = {
     "a": False,
     "s": False,
     "d": False,
+
+    "i": False,
+    "k": False
 }
 
 delta_speed = { # _____ : [front left, front right, back left, back right]
@@ -36,15 +39,32 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "a": [-50, 50, 50, -50],
     "s": [-50, -50, -50, -50],
     "d": [50, -50, -50, 50],
+    "j": [-50, 50, -50, 50],
+    "l": [50, -50, 50, -50],
+
+    "i": [50, 50],
+    "k": [-50, -50],
 }
 
-accepted_chars = ["w", "a", "s", "d"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k"]
+wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
+ik_keys = ["i", "k"]
 
-def all_downs():
+def all_wasdjl_downs():
     downs = []
     for char, value in is_down.items():
         if value == True:
-            downs.append(char)
+            if char in wasdjl_keys:
+                downs.append(char)
+
+    return downs
+
+def all_ik_downs():
+    downs = []
+    for char, value in is_down.items():
+        if value == True:
+            if char in ik_keys:
+                downs.append(char)
 
     return downs
 
@@ -53,29 +73,47 @@ def power():
     frontRThrusterSpeed = 0
     backLThrusterSpeed = 0
     backRThrusterSpeed = 0
-    for char in all_downs():
+    midLThrusterSpeed = 0
+    midRThrusterSpeed = 0
+    for char in all_wasdjl_downs():
         frontLThrusterSpeed += delta_speed[char][0]
         frontRThrusterSpeed += delta_speed[char][1]
         backLThrusterSpeed += delta_speed[char][2]
         backRThrusterSpeed += delta_speed[char][3]
+    
+    for char in all_ik_downs():
+        midLThrusterSpeed += delta_speed[char][0]
+        midRThrusterSpeed += delta_speed[char][1]
 
     # Get the average thruster speeds
-    l = len(all_downs())
+    l = len(all_wasdjl_downs())
     if l >= 2:
         frontLThrusterSpeed = round(frontLThrusterSpeed / l)
         frontRThrusterSpeed = round(frontRThrusterSpeed / l)
         backLThrusterSpeed = round(backLThrusterSpeed / l)
         backRThrusterSpeed = round(backRThrusterSpeed / l)
 
+
+    if len(all_ik_downs()) == 2:
+        midLThrusterSpeed = int(midLThrusterSpeed / 2)
+        midRThrusterSpeed = int(midRThrusterSpeed / 2)
+
     print(f"{frontLThrusterSpeed = }")
     print(f"{frontRThrusterSpeed = }")
     print(f"{backLThrusterSpeed = }")
     print(f"{backRThrusterSpeed = }")
+
+    print(f"{midLThrusterSpeed = }")
+    print(f"{midRThrusterSpeed = }")
+    print()
     
     # controls.thrusterOn(frontLThruster, frontLThrusterSpeed)
     # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
     # controls.thrusterOn(backLThruster, backLThrusterSpeed)
     # controls.thrusterOn(backRThruster, backRThrusterSpeed)
+
+    # controls.thrusterOn(midLThruster, midLThrusterSpeed)
+    # controls.thrusterOn(midRThruster, midRThrusterSpeed)
 
 # controls = Controls()
 # controls.startThread()
