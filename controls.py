@@ -228,12 +228,12 @@ class Controls:
         self.setClawDeg(self.clawRotateServo, self.currClawRotateDeg)
 
     def moveCameraServo(self, incrementDeg):
-        self.urrCameraServoDeg += incrementDeg
+        self.currCameraServoDeg += incrementDeg
         if (self.currCameraServoDeg < 0):
             self.currCameraServoDeg = 0
         if (self.currCameraServoDeg > 180):
             self.currCameraServoDeg = 180
-        self.setClawDeg(self.clawRotateServo, self.currCameraServoDeg)
+        self.setClawDeg(self.cameraServo, self.currCameraServoDeg)
 
     @staticmethod
     def getThrusterStrength(input): #turns an input of -50 to 50 into a value between 100 and 200
