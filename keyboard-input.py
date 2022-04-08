@@ -1,3 +1,4 @@
+from ftplib import all_errors
 from pynput import keyboard
 from controls import Controls
 from sys import exit
@@ -24,8 +25,56 @@ rotateRight = False
 rotateLeft = False
 
 is_down = {
-    "w": False
+    "w": False,
+    "a": False,
+    "s": False,
+    "d": False,
 }
+
+delta_speed = { # _____ : [front left, front right, back left, back right]
+    "w": [50, 50, 50, 50],
+    "a": [-50, 50, 50, -50],
+    "s": [-50, -50, -50, -50],
+    "d": [50, -50, -50, 50],
+}
+
+accepted_chars = ["w", "a", "s", "d"]
+
+def all_downs():
+    downs = []
+    for char, value in is_down.items():
+        if value == True:
+            downs.append(char)
+
+    return downs
+
+def power():
+    frontLThrusterSpeed = 0
+    frontRThrusterSpeed = 0
+    backLThrusterSpeed = 0
+    backRThrusterSpeed = 0
+    for char in all_downs():
+        frontLThrusterSpeed += delta_speed[char][0]
+        frontRThrusterSpeed += delta_speed[char][1]
+        backLThrusterSpeed += delta_speed[char][2]
+        backRThrusterSpeed += delta_speed[char][3]
+
+    # Get the average thruster speeds
+    l = len(all_downs())
+    frontLThrusterSpeed = round(frontLThrusterSpeed / l)
+    frontRThrusterSpeed = round(frontRThrusterSpeed / l)
+    backLThrusterSpeed = round(backLThrusterSpeed / l)
+    backRThrusterSpeed = round(backRThrusterSpeed / l)
+
+    print(f"{frontLThrusterSpeed = }")
+    print(f"{frontRThrusterSpeed = }")
+    print(f"{backLThrusterSpeed = }")
+    print(f"{backRThrusterSpeed = }")
+    
+    # controls.thrusterOn(frontLThruster, frontLThrusterSpeed)
+    # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
+    # controls.thrusterOn(backLThruster, backLThrusterSpeed)
+    # controls.thrusterOn(backRThruster, backRThrusterSpeed)
 
 # controls = Controls()
 # controls.startThread()
@@ -36,58 +85,44 @@ is_down = {
 def on_press(key):
     # Check if key type is valid
     try:
-        # print(key.char)
-        pass
+        char = key.char
+        # print(char)
     except AttributeError:
-        print(f"Special key '{key}' pressed")
+        # print(f"Special key '{key}' pressed")
         return
 
-    speed = 200
-    reverse_speed = 300 - speed
-    try:
-        char = key.char
-    except:
-        exit()
-    
-    if char == "w" and not is_down["w"]:
-        # controls.thrusterOn(frontRThruster, speed)
-        # controls.thrusterOn(fwwrontLThruster, speed)
-        # controls.thrusterOn(backRThruster, speed)
-        # controls.thrusterOn(backLThruster, speed)
-        print("yay1")
-        is_down["w"] = True
-        pass
+    if char in is_down.keys():
+        if is_down[char] == True:
+            # print("Skipping because already on")
+            return
 
-    elif char == "s":
-        # controls.thrusterOn(frontRThruster, reverse_speed)
-        # controls.thrusterOn(frontLThruster, reverse_speed)
-        # controls.thrusterOn(backRThruster, reverse_speed)
-        # controls.thrusterOn(backLThruster, reverse_speed)
-        # print("yay2")
-        pass
-    
-    elif char == "a":
-        pass
+    if char in accepted_chars:
+        is_down[char] = True
+    else:
+        return
 
-    elif char == "a":
-        pass
-    
+    power()
+
+
 
 def on_release(key):
     # Check if key type is valid
     try:
-        print(key.char)
+        char = key.char
+        # print(char)
     except AttributeError:
-        print(f"Special key '{key}' released")
+        print(f"Special key '{key}' pressed")
         return
 
-    try:
-        char = key.char
-    except:
-        exit()
+    if char in is_down.keys():
+        if is_down[char] == False:
+            # print("Skipping because already off")
+            return
 
-    if char == "w" and is_down["w"]:
-        is_down["w"] = False
+    if char in accepted_chars:
+        is_down[char] = False
+
+    # power()
 
 
 def main():
