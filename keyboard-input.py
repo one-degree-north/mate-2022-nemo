@@ -1,4 +1,3 @@
-from ftplib import all_errors
 from pynput import keyboard
 from controls import Controls
 from sys import exit
@@ -29,10 +28,16 @@ is_down = {
     "a": False,
     "s": False,
     "d": False,
+    "j": False,
+    "l": False,
 
     "i": False,
-    "k": False
+    "k": False,
+
+    "e": False,
 }
+
+claw_is_clamped = False
 
 delta_speed = { # _____ : [front left, front right, back left, back right]
     "w": [50, 50, 50, 50],
@@ -46,7 +51,7 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "k": [-50, -50],
 }
 
-accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "e", "1", "2", "r", "f"]
 wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
 ik_keys = ["i", "k"]
 
@@ -65,10 +70,11 @@ def all_ik_downs():
         if value == True:
             if char in ik_keys:
                 downs.append(char)
-
+    # print(is_down)
     return downs
 
 def power():
+    # global claw_is_clamped
     frontLThrusterSpeed = 0
     frontRThrusterSpeed = 0
     backLThrusterSpeed = 0
@@ -105,7 +111,8 @@ def power():
 
     print(f"{midLThrusterSpeed = }")
     print(f"{midRThrusterSpeed = }")
-    print()
+    print(f"{currClawRotateDeg = }")
+    print(f"{currCameraServoDeg = }")
     
     # controls.thrusterOn(frontLThruster, frontLThrusterSpeed)
     # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
@@ -115,6 +122,11 @@ def power():
     # controls.thrusterOn(midLThruster, midLThrusterSpeed)
     # controls.thrusterOn(midRThruster, midRThrusterSpeed)
 
+    # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+    # controls.setClawDeg(cameraServo, currCameraServoDeg)
+
+
+
 # controls = Controls()
 # controls.startThread()
 
@@ -122,10 +134,14 @@ def power():
 
 
 def on_press(key):
+    global currClawRotateDeg
+    global currCameraServoDeg
     # Check if key type is valid
     try:
         char = key.char
+        # print(type(char))
         # print(char)
+        # print(char == "1")
     except AttributeError:
         # print(f"Special key '{key}' pressed")
         return
@@ -140,11 +156,37 @@ def on_press(key):
     else:
         return
 
+    if char == "1":
+        if currClawRotateDeg - 10 < 0:
+            currClawRotateDeg = 0
+        else:
+            currClawRotateDeg -= 10
+    elif char == "2":
+        if currClawRotateDeg + 10 > 180:
+            currClawRotateDeg = 180
+        else:
+            currClawRotateDeg += 10
+
+    elif char == "r":
+        if currCameraServoDeg - 10 < 0:
+            currCameraServoDeg = 0
+        else:
+            currCameraServoDeg -= 10
+    elif char == "f":
+        if currCameraServoDeg + 10 > 180:
+            currCameraServoDeg = 180
+        else:
+            currCameraServoDeg += 10
+
+    # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+        
+
     power()
 
 
 
 def on_release(key):
+    global claw_is_clamped
     # Check if key type is valid
     try:
         char = key.char
@@ -160,6 +202,16 @@ def on_release(key):
 
     if char in accepted_chars:
         is_down[char] = False
+
+    if char == "e":
+        if claw_is_clamped:
+            print("unclamping")
+            # controls.setClawDeg(clawServo, 89)
+            claw_is_clamped = False
+        else:
+            print("clamping")
+            # controls.setClawDeg(clawServo, 1)
+            claw_is_clamped = True
 
     power()
 
