@@ -493,12 +493,12 @@ if __name__ == '__main__':
 
 
         if xboxControlId == 2: # rotating to the left
-            # thrusterStrength = (value + 100) / 4 + 150
-            # reverseThrusterStrength = 150 - (value + 100) / 4  
+            reverseThrusterStrength = (value + 100) / 4 + 150
+            thrusterStrength = 150 - (value + 100) / 4
             # |-> use if old controller
 
-            thrusterStrength = value / 2 + 150
-            reverseThrusterStrength = 150 - value / 2
+            # thrusterStrength = value / 2 + 150
+            # reverseThrusterStrength = 150 - value / 2
 
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
