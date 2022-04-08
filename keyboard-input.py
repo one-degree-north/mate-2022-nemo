@@ -22,7 +22,7 @@ currCameraServoDeg = 0
 
 rotateRight = False
 rotateLeft = False
-controls = Controls
+controls = Controls()
 controls.startThread()
 
 is_down = {
