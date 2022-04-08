@@ -132,9 +132,6 @@ def power():
 
 
 
-# controls = Controls()
-# controls.startThread()
-
 
 
 
