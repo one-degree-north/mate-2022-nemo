@@ -61,10 +61,11 @@ def power():
 
     # Get the average thruster speeds
     l = len(all_downs())
-    frontLThrusterSpeed = round(frontLThrusterSpeed / l)
-    frontRThrusterSpeed = round(frontRThrusterSpeed / l)
-    backLThrusterSpeed = round(backLThrusterSpeed / l)
-    backRThrusterSpeed = round(backRThrusterSpeed / l)
+    if l >= 2:
+        frontLThrusterSpeed = round(frontLThrusterSpeed / l)
+        frontRThrusterSpeed = round(frontRThrusterSpeed / l)
+        backLThrusterSpeed = round(backLThrusterSpeed / l)
+        backRThrusterSpeed = round(backRThrusterSpeed / l)
 
     print(f"{frontLThrusterSpeed = }")
     print(f"{frontRThrusterSpeed = }")
@@ -122,7 +123,7 @@ def on_release(key):
     if char in accepted_chars:
         is_down[char] = False
 
-    # power()
+    power()
 
 
 def main():
