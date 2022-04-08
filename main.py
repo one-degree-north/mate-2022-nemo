@@ -59,8 +59,9 @@ def testCommThreading2():
     controls.startThread()
     controls.getAccelData()
     while True:
-        if (input()):
-            controls.setClawDeg(selectedServo=0)
+        print(controls.accelData)
+        #if (input()):
+        #    controls.setClawDeg(selectedServo=0)
 
 def testThruster():
     controls=Controls()
