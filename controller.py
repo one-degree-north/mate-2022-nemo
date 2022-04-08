@@ -402,13 +402,16 @@ if __name__ == '__main__':
     controls.startThread()
     #generic call back
     def controlCallBack(xboxControlId, value):
+        if isinstance(value, (int, float)):
+            if value > 200:
+                value = int(200)
+            elif value < 0:
+                value = int(0)
+            else:
+                value = int(value)
 
-        if value > 200:
-            value = int(200)
-        elif value < 0:
-            value = int(0)
-        else:
-            value = int(value)
+        elif isinstance(value, tuple):
+            value = (int(value[0]), int(value[1]))
         
         print(f"Control Id = {xboxControlId}, Value = {value}")
     
