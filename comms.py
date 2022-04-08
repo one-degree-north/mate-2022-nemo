@@ -4,7 +4,7 @@ from serial import *
 
 class Comms:
     def __init__(self, outputQueue=None, controls=None):
-        self.arduinoSerial = Serial(port="/dev/ttyS0", baudrate=9600)
+        self.arduinoSerial = Serial(port="/dev/ttyUSB0", baudrate=9600)
         # "/dev/ttyS0"
         #"/dev/cu.usbmodem14201"
         #eh make these static
