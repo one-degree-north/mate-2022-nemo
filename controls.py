@@ -46,6 +46,12 @@ class Controls:
         self.rotateRight = False
         self.rotateLeft = False
 
+        self.flip = [
+            self.midLThruster,
+            self.frontLThruster, 
+            self.frontRThruster,
+        ]
+
 
     def startThread(self):
         self.comms.startThread()
@@ -53,7 +59,8 @@ class Controls:
 
     def thrusterOn(self, motor, speed):
         #Testing, having the input between -50 and 50 instead
-        speed *= -1 # MAJOR SPEED FLIP THING
+        if motor not in self.flip:
+            speed *= -1 # MAJOR SPEED FLIP THING
         speed += 150
         speed = int(speed)
         if (speed > 200):
