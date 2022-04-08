@@ -29,22 +29,22 @@ class Controls:
         self.clawRotateServo = 1
         self.clawServo = 2
         
-        frontLThruster = 1
-        frontRThruster = 0
-        midLThruster = 2
-        midRThruster = 5
-        backLThruster = 4
-        backRThruster = 3
-        cameraServo = 0
-        clawRotateServo = 1
-        clawServo = 2
-        topSpeed = 200
-        minSpeed = 100
-        currClawDeg = 0 # just the claw's clamp thingy
-        currClawRotateDeg = 0 # whole claw thingy
-        currCameraServoDeg = 0
-        rotateRight = False
-        rotateLeft = False
+        self.frontLThruster = 1
+        self.frontRThruster = 0
+        self.midLThruster = 2
+        self.midRThruster = 5
+        self.backLThruster = 4
+        self.backRThruster = 3
+        self.cameraServo = 0
+        self.clawRotateServo = 1
+        self.clawServo = 2
+        self.topSpeed = 200
+        self.minSpeed = 100
+        self.currClawDeg = 0 # just the claw's clamp thingy
+        self.currClawRotateDeg = 0 # whole claw thingy
+        self.currCameraServoDeg = 0
+        self.rotateRight = False
+        self.rotateLeft = False
 
 
     def startThread(self):
