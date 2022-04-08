@@ -22,6 +22,8 @@ currCameraServoDeg = 0
 
 rotateRight = False
 rotateLeft = False
+controls = Controls
+controls.startThread()
 
 is_down = {
     "w": False,
@@ -118,15 +120,15 @@ def power():
     print(f"{currClawRotateDeg = }")
     print(f"{currCameraServoDeg = }")
     
-    # controls.thrusterOn(frontLThruster, frontLThrusterSpeed)
-    # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
-    # controls.thrusterOn(backLThruster, backLThrusterSpeed)
-    # controls.thrusterOn(backRThruster, backRThrusterSpeed)
-    # controls.thrusterOn(midLThruster, midLThrusterSpeed)
-    # controls.thrusterOn(midRThruster, midRThrusterSpeed)
+    controls.thrusterOn(frontLThruster, frontLThrusterSpeed)
+    controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
+    controls.thrusterOn(backLThruster, backLThrusterSpeed)
+    controls.thrusterOn(backRThruster, backRThrusterSpeed)
+    controls.thrusterOn(midLThruster, midLThrusterSpeed)
+    controls.thrusterOn(midRThruster, midRThrusterSpeed)
 
-    # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
-    # controls.setClawDeg(cameraServo, currCameraServoDeg)
+    #controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+    #controls.setClawDeg(cameraServo, currCameraServoDeg)
 
 
 
@@ -164,23 +166,28 @@ def on_press(key):
             currClawRotateDeg = 0
         else:
             currClawRotateDeg -= 10
+        controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+
     elif char == "2":
         if currClawRotateDeg + 10 > 180:
             currClawRotateDeg = 180
         else:
             currClawRotateDeg += 10
+        controls.setClawDeg(clawRotateServo, currClawRotateDeg)
 
     elif char == "r":
         if currCameraServoDeg - 10 < 0:
             currCameraServoDeg = 0
         else:
             currCameraServoDeg -= 10
+        controls.setClawDeg(cameraServo, currCameraServoDeg)
+
     elif char == "f":
         if currCameraServoDeg + 10 > 180:
             currCameraServoDeg = 180
         else:
             currCameraServoDeg += 10
-        
+        controls.setClawDeg(cameraServo, currCameraServoDeg)
 
     # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
         
