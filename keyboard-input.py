@@ -33,6 +33,8 @@ is_down = {
 
     "i": False,
     "k": False,
+    "u": False,
+    "o": False,
 
     "e": False,
 }
@@ -40,20 +42,22 @@ is_down = {
 claw_is_clamped = False
 
 delta_speed = { # _____ : [front left, front right, back left, back right]
-    "w": [50, 50, 50, 50],
-    "a": [-50, 50, 50, -50],
-    "s": [-50, -50, -50, -50],
-    "d": [50, -50, -50, 50],
-    "j": [-50, 50, -50, 50],
-    "l": [50, -50, 50, -50],
+    "w": [50, 50, 50, 50], #front
+    "a": [-50, 50, 50, -50], #left
+    "s": [-50, -50, -50, -50], #back
+    "d": [50, -50, -50, 50], #right
+    "j": [-50, 50, -50, 50], #rotate
+    "l": [50, -50, 50, -50], #rotate
 
-    "i": [50, 50],
+    "i": [50, 50], #
     "k": [-50, -50],
+    "u": [-50, 50],
+    "o":[50, -50]
 }
 
-accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "e", "1", "2", "r", "f"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f"]
 wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
-ik_keys = ["i", "k"]
+ikuo_keys = ["i", "k", "u", "o"]
 
 def all_wasdjl_downs():
     downs = []
@@ -64,11 +68,11 @@ def all_wasdjl_downs():
 
     return downs
 
-def all_ik_downs():
+def all_ikuo_downs():
     downs = []
     for char, value in is_down.items():
         if value == True:
-            if char in ik_keys:
+            if char in ikuo_keys:
                 downs.append(char)
     # print(is_down)
     return downs
@@ -87,7 +91,7 @@ def power():
         backLThrusterSpeed += delta_speed[char][2]
         backRThrusterSpeed += delta_speed[char][3]
     
-    for char in all_ik_downs():
+    for char in all_ikuo_downs():
         midLThrusterSpeed += delta_speed[char][0]
         midRThrusterSpeed += delta_speed[char][1]
 
@@ -100,7 +104,7 @@ def power():
         backRThrusterSpeed = round(backRThrusterSpeed / l)
 
 
-    if len(all_ik_downs()) == 2:
+    if len(all_ikuo_downs()) >= 2:
         midLThrusterSpeed = int(midLThrusterSpeed / 2)
         midRThrusterSpeed = int(midRThrusterSpeed / 2)
 
@@ -118,7 +122,6 @@ def power():
     # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
     # controls.thrusterOn(backLThruster, backLThrusterSpeed)
     # controls.thrusterOn(backRThruster, backRThrusterSpeed)
-
     # controls.thrusterOn(midLThruster, midLThrusterSpeed)
     # controls.thrusterOn(midRThruster, midRThrusterSpeed)
 
@@ -177,6 +180,7 @@ def on_press(key):
             currCameraServoDeg = 180
         else:
             currCameraServoDeg += 10
+        
 
     # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
         
