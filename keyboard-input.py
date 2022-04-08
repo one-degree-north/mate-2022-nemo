@@ -1,5 +1,6 @@
 from pynput import keyboard
 from controls import Controls
+from sys import exit
 
 frontLThruster = 1
 frontRThruster = 0
@@ -22,6 +23,10 @@ currCameraServoDeg = 0
 rotateRight = False
 rotateLeft = False
 
+is_down = {
+    "w": False
+}
+
 # controls = Controls()
 # controls.startThread()
 
@@ -31,28 +36,35 @@ rotateLeft = False
 def on_press(key):
     # Check if key type is valid
     try:
-        print(key.char)
+        # print(key.char)
+        pass
     except AttributeError:
         print(f"Special key '{key}' pressed")
         return
 
     speed = 200
     reverse_speed = 300 - speed
-    char = key.char
+    try:
+        char = key.char
+    except:
+        exit()
     
-    if char == "w":
+    if char == "w" and not is_down["w"]:
         # controls.thrusterOn(frontRThruster, speed)
-        # controls.thrusterOn(frontLThruster, speed)
+        # controls.thrusterOn(fwwrontLThruster, speed)
         # controls.thrusterOn(backRThruster, speed)
         # controls.thrusterOn(backLThruster, speed)
         print("yay1")
+        is_down["w"] = True
+        pass
 
     elif char == "s":
         # controls.thrusterOn(frontRThruster, reverse_speed)
         # controls.thrusterOn(frontLThruster, reverse_speed)
         # controls.thrusterOn(backRThruster, reverse_speed)
         # controls.thrusterOn(backLThruster, reverse_speed)
-        print("yay2")
+        # print("yay2")
+        pass
     
     elif char == "a":
         pass
@@ -68,6 +80,14 @@ def on_release(key):
     except AttributeError:
         print(f"Special key '{key}' released")
         return
+
+    try:
+        char = key.char
+    except:
+        exit()
+
+    if char == "w" and is_down["w"]:
+        is_down["w"] = False
 
 
 def main():
