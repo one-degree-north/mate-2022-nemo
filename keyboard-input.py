@@ -39,20 +39,22 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "a": [-50, 50, 50, -50],
     "s": [-50, -50, -50, -50],
     "d": [50, -50, -50, 50],
+    "j": [-50, 50, -50, 50],
+    "l": [50, -50, 50, -50],
 
     "i": [50, 50],
     "k": [-50, -50],
 }
 
-accepted_chars = ["w", "a", "s", "d", "i", "k"]
-wasd_keys = ["w", "a", "s", "d"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k"]
+wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
 ik_keys = ["i", "k"]
 
-def all_wasd_downs():
+def all_wasdjl_downs():
     downs = []
     for char, value in is_down.items():
         if value == True:
-            if char in wasd_keys:
+            if char in wasdjl_keys:
                 downs.append(char)
 
     return downs
@@ -73,7 +75,7 @@ def power():
     backRThrusterSpeed = 0
     midLThrusterSpeed = 0
     midRThrusterSpeed = 0
-    for char in all_wasd_downs():
+    for char in all_wasdjl_downs():
         frontLThrusterSpeed += delta_speed[char][0]
         frontRThrusterSpeed += delta_speed[char][1]
         backLThrusterSpeed += delta_speed[char][2]
@@ -84,7 +86,7 @@ def power():
         midRThrusterSpeed += delta_speed[char][1]
 
     # Get the average thruster speeds
-    l = len(all_wasd_downs())
+    l = len(all_wasdjl_downs())
     if l >= 2:
         frontLThrusterSpeed = round(frontLThrusterSpeed / l)
         frontRThrusterSpeed = round(frontRThrusterSpeed / l)
@@ -109,6 +111,9 @@ def power():
     # controls.thrusterOn(frontRThruster, frontRThrusterSpeed)
     # controls.thrusterOn(backLThruster, backLThrusterSpeed)
     # controls.thrusterOn(backRThruster, backRThrusterSpeed)
+
+    # controls.thrusterOn(midLThruster, midLThrusterSpeed)
+    # controls.thrusterOn(midRThruster, midRThrusterSpeed)
 
 # controls = Controls()
 # controls.startThread()
