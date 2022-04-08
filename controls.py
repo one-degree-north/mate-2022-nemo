@@ -39,7 +39,7 @@ class Controls:
         #self.comms.write(0x20, [motor, speed])
 
     def thrusterOff(self, motor):
-        self.outputQueue.put((0x20, [motor, 0]))
+        self.outputQueue.put((0x20, [motor, 150]))
         #self.comms.write(0x20, [motor, 0])
 
     def getGyroData(self):
