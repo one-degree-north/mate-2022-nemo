@@ -67,6 +67,7 @@ def on_release(key):
         print(key.char)
     except AttributeError:
         print(f"Special key '{key}' released")
+        return
 
 
 def main():
