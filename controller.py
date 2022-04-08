@@ -489,8 +489,12 @@ if __name__ == '__main__':
                 controls.thrusterOn(midLThruster, 150)
 
         if xboxControlId == 2: # rotating to the left
-            thrusterStrength = (value + 100) / 4 + 150
-            reverseThrusterStrength = 150 - (value + 100) / 4 
+            # thrusterStrength = (value + 100) / 4 + 150
+            # reverseThrusterStrength = 150 - (value + 100) / 4  
+            # |-> use if old controller
+
+            thrusterStrength = value / 2 + 150
+            reverseThrusterStrength = 150 - value / 2
 
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
@@ -514,21 +518,22 @@ if __name__ == '__main__':
         if xboxControlId == 6: # close the claw
             controls.setClawDeg(clawServo, 89)
 
-        if xboxControlId == 7: # opent he claw
+        if xboxControlId == 7: # opent the claw
             controls.setClawDeg(clawServo, 1)
 
-        """
-        if xboxControlId == 9: #idk what 9 corresponds to , change later
-            #assuming value of 1 is pressed, value of 0 is released
-            if (currClawRotateDeg > 180):
-                currClawRotateDeg = 180
-            if (currClawRotateDeg < 0):
-                currClawRotateDeg = 0
-            if (value == 1):
-                controls.rotateRotateServo = True
-            if (value == 0):
-                controls.rotateRotateServo = False
-            pass"""
+        if xboxControlId == 8: # rotate the claw one way
+            pass
+
+        if xboxControlId == 9: # roate the claw the other way
+            pass
+
+        # if xboxControlId == [id of the middle 'X' button]:
+        #     stop all the claw movements
+
+        # if xboxControlId == [id of the middle left button]: 
+        #     stop all the thrusters
+        
+        
     
 
 
@@ -552,9 +557,11 @@ if __name__ == '__main__':
         pass
     #specific callbacks for the left thumb (X & Y)
     def leftThumbX(xValue):
-        print(f"LX {xValue}")
+        pass
+        # print(f"LX {xValue}")
     def leftThumbY(yValue):
-        print(f"LY {yValue}")
+        pass
+        # print(f"LY {yValue}")
 
     #setup xbox controller, set out the deadzone and scale, also invert the Y Axis (for some reason in Pygame negative is up - wierd! 
     xboxCont = XboxController(controlCallBack, deadzone = 30, scale = 100, invertYAxis = True)
