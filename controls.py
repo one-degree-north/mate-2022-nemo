@@ -29,6 +29,22 @@ class Controls:
         self.clawRotateServo = 1
         self.clawServo = 2
         
+        frontLThruster = 1
+        frontRThruster = 0
+        midLThruster = 2
+        midRThruster = 5
+        backLThruster = 4
+        backRThruster = 3
+        cameraServo = 0
+        clawRotateServo = 1
+        clawServo = 2
+        topSpeed = 200
+        minSpeed = 100
+        currClawDeg = 0 # just the claw's clamp thingy
+        currClawRotateDeg = 0 # whole claw thingy
+        currCameraServoDeg = 0
+        rotateRight = False
+        rotateLeft = False
 
 
     def startThread(self):
@@ -36,6 +52,14 @@ class Controls:
         print("start thread")
 
     def thrusterOn(self, motor, speed):
+        #Testing, having the input between -50 and 50 instead
+        speed += 150
+        speed = int(speed)
+        if (speed > 200):
+            speed = 200
+        if (speed < 0):
+            speed = 0
+
         self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])
 
@@ -140,6 +164,84 @@ class Controls:
         if (self.currRotateDeg > 180):
             self.currRotateDeg = 180
         self.setClawDeg(self.clawRotateServo, self.currRotateDeg)
+
+    def moveFront(self, strength):
+        thrusterStrength = strength
+        reverseThrusterStrength = strength * -1
+        self.thrusterOn(self.frontRThruster, int(reverseThrusterStrength))
+        self.thrusterOn(self.frontLThruster, int(reverseThrusterStrength))
+        self.thrusterOn(self.backRThruster, int(reverseThrusterStrength))
+        self.thrusterOn(self.backLThruster, int(reverseThrusterStrength))
+
+    def moveSide(self, strength):
+        thrusterStrength = strength
+        reverseThrusterStrength = strength * -1
+        self.thrusterOn(self.frontRThruster, int(thrusterStrength))
+        self.thrusterOn(self.frontLThruster, int(thrusterStrength))
+        self.thrusterOn(self.backRThruster, int(thrusterStrength))
+        self.thrusterOn(self.backLThruster, int(thrusterStrength))
+
+    def rotate(self, strength):
+        thrusterStrength = strength
+        reverseThrusterStrength = strength * -1
+        self.thrusterOn(self.frontRThruster, int(thrusterStrength))
+        self.thrusterOn(self.backRThruster, int(thrusterStrength))
+        self.thrusterOn(self.backLThruster, int(reverseThrusterStrength))
+        self.thrusterOn(self.frontLThruster, int(reverseThrusterStrength))
+        pass
+
+    def moveUp(self, strength):
+        thrusterStrength = strength
+        reverseThrusterStrength = strength * -1
+        self.thrusterOn(self.midLThruster, int(thrusterStrength))  
+        self.thrusterOn(self.midRThruster, int(thrusterStrength))
+
+    def tilt(self, strength, direction): #true is right, false is left
+        thrusterStrength = strength
+        reverseThrusterStrength = strength * -1
+        if (direction):
+            self.thrusterOn(self.midLThruster, int(thrusterStrength))
+        else:
+            self.thrusterOn(self.midRThruster, int(thrusterStrength))
+
+    def halt(self):
+        self.thrusterOn(self.frontRThruster, 0)
+        self.thrusterOn(self.frontLThruster, 0)
+        self.thrusterOn(self.backRThruster, 0)
+        self.thrusterOn(self.backLThruster, 0)
+        self.thrusterOn(self.midRThruster, 0)
+        self.thrusterOn(self.midLThruster, 0)
+
+    def moveClaw(self, deg):
+        if (deg > 90):
+            deg = 90
+        if (deg < 0):
+            deg = 0
+        self.setClawDeg(self.clawServo, deg)
+
+    def moveRotateServo(self, incrementDeg):
+        self.currClawRotateDeg += incrementDeg
+        if (self.currClawRotateDeg < 0):
+            self.currClawRotateDeg = 0
+        if (self.currClawRotateDeg > 180):
+            self.currClawRotateDeg = 180
+        self.setClawDeg(self.clawRotateServo, self.currClawRotateDeg)
+
+    def moveCameraServo(self, incrementDeg):
+        self.urrCameraServoDeg += incrementDeg
+        if (self.currCameraServoDeg < 0):
+            self.currCameraServoDeg = 0
+        if (self.currCameraServoDeg > 180):
+            self.currCameraServoDeg = 180
+        self.setClawDeg(self.clawRotateServo, self.currCameraServoDeg)
+
+    @staticmethod
+    def getThrusterStrength(input): #turns an input of -50 to 50 into a value between 100 and 200
+        return input + 150
+    @staticmethod
+    def invertStrength(input): #turns an input of -50 to 50 into an inverted value between 100 and 200
+        return -1*input+150
+
 
     """def testCommControlQueue(self):
 

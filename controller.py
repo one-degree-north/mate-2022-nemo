@@ -451,8 +451,12 @@ if __name__ == '__main__':
         
 
         if xboxControlId == 0: # left-right movement  
-            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+            #thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            #reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+
+            #INSTEAD CONVERTING TO BETWEEN -50 and 50!!
+            thrusterStrength = int(value//2)
+            reverseThrusterStrength = int((-1*value)//2)
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
             controls.thrusterOn(frontLThruster, int(thrusterStrength))
@@ -461,8 +465,12 @@ if __name__ == '__main__':
             controls.thrusterOn(backLThruster, int(thrusterStrength))
 
         if xboxControlId == 1: # front-back movement
-            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+            #thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            #reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+
+            #INSTEAD CONVERTING TO BETWEEN -50 and 50!!
+            thrusterStrength = int(value//2)
+            reverseThrusterStrength = int((-1*value)//2)
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(reverseThrusterStrength))
             controls.thrusterOn(frontLThruster, int(reverseThrusterStrength))
@@ -474,7 +482,7 @@ if __name__ == '__main__':
         if xboxControlId == 17: # up-down movement
             # thrusterStrength = 50 * value[1] + 150
 
-            if value[1] > 0: # move up
+            """if value[1] > 0: # move up
                 controls.thrusterOn(midLThruster, 200)    
                 controls.thrusterOn(midRThruster, 200)
             elif value[1] < 0: # move down
@@ -489,16 +497,38 @@ if __name__ == '__main__':
             #reset, CHANGE THIS
             if value[0] == 0 and value[1] == 0:
                 controls.thrusterOn(midLThruster, 150)
-                controls.thrusterOn(midRThruster, 150)
+                controls.thrusterOn(midRThruster, 150)"""
+            
+            #INSTEAD VALUES BETWEEN -50 and 50!!
+            if value[1] > 0: # move up
+                controls.thrusterOn(midLThruster, 50)    
+                controls.thrusterOn(midRThruster, 50)
+            elif value[1] < 0: # move down
+                controls.thrusterOn(midLThruster, -50)    
+                controls.thrusterOn(midRThruster, -50)
+
+            if value[0] > 0: # tilting to the right
+                controls.thrusterOn(midLThruster, 50) # tilt to the right
+            elif value[0] < 0: # tilt to the left
+                controls.thrusterOn(midRThruster, 50)
+            
+            #reset, CHANGE THIS
+            if value[0] == 0 and value[1] == 0:
+                controls.thrusterOn(midLThruster, 0)
+                controls.thrusterOn(midRThruster, 0)
 
 
         if xboxControlId == 2: # rotating to the left
-            reverseThrusterStrength = (value + 100) / 4 + 150
-            thrusterStrength = 150 - (value + 100) / 4
+            #reverseThrusterStrength = (value + 100) / 4 + 150
+            #thrusterStrength = 150 - (value + 100) / 4
             # |-> use if old controller
 
             # thrusterStrength = value / 2 + 150
             # reverseThrusterStrength = 150 - value / 2
+
+            #INSETAD CONVERTING TO VALUES BETWEEN -50 and 50!!
+            thrusterStrength = int(value//2)
+            reverseThrusterStrength = int(-1*value//2)
 
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
@@ -511,6 +541,9 @@ if __name__ == '__main__':
             thrusterStrength = value / 2 + 150
             reverseThrusterStrength = 150 - value / 2
 
+            #INSTEAD CONVERTING TO VALUES BETWEEN -50 and 50!!
+            thrusterStrength = value-50
+            reverseThrusterStrength = 50-value
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontLThruster, int(thrusterStrength))
             controls.thrusterOn(backLThruster, int(thrusterStrength))
@@ -585,12 +618,20 @@ if __name__ == '__main__':
             #     pass
 
         if xboxControlId == 14: # turns all thrusters off
-            controls.thrusterOn(frontRThruster, 150)
-            controls.thrusterOn(frontLThruster, 150)
-            controls.thrusterOn(backRThruster, 150)
-            controls.thrusterOn(backLThruster, 150)
-            controls.thrusterOn(midRThruster, 150)
-            controls.thrusterOn(midLThruster, 150)
+            #controls.thrusterOn(frontRThruster, 150)
+            #controls.thrusterOn(frontLThruster, 150)
+            #controls.thrusterOn(backRThruster, 150)
+            #controls.thrusterOn(backLThruster, 150)
+            #controls.thrusterOn(midRThruster, 150)
+            #controls.thrusterOn(midLThruster, 150)
+
+            #INSTEAD CONVERTING TO VALUES BETWEEN -50 and 50!!
+            controls.thrusterOn(frontRThruster, 0)
+            controls.thrusterOn(frontLThruster, 0)
+            controls.thrusterOn(backRThruster, 0)
+            controls.thrusterOn(backLThruster, 0)
+            controls.thrusterOn(midRThruster, 0)
+            controls.thrusterOn(midLThruster, 0)
 
 
 
