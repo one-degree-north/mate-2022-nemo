@@ -448,10 +448,11 @@ if __name__ == '__main__':
         #Probably good one
         #thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
         #reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
-        thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
-        reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
+        
 
         if xboxControlId == 0: # left-right movement  
+            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(thrusterStrength))
             controls.thrusterOn(frontLThruster, int(thrusterStrength))
@@ -460,6 +461,8 @@ if __name__ == '__main__':
             controls.thrusterOn(backLThruster, int(thrusterStrength))
 
         if xboxControlId == 1: # front-back movement
+            thrusterStrength = (value + 100) / 2 + 100 # 100 to 200. 150 is stationart
+            reverseThrusterStrength = -1 * (thrusterStrength - 150) + 150
             print(f"thrusterStrength: {thrusterStrength}, reverseThrusterStrength: {reverseThrusterStrength}")
             controls.thrusterOn(frontRThruster, int(reverseThrusterStrength))
             controls.thrusterOn(frontLThruster, int(reverseThrusterStrength))
@@ -581,13 +584,13 @@ if __name__ == '__main__':
             # else:
             #     pass
 
-        # if xboxControlId == [x button]: # turns all thrusters off
-        #     controls.thrusterOn(frontRThruster, 150)
-        #     controls.thrusterOn(frontLThruster, 150)
-        #     controls.thrusterOn(backRThruster, 150)
-        #     controls.thrusterOn(backLThruster, 150)
-        #     controls.thrusterOn(midRThruster, 150)
-        #     controls.thrusterOn(midLThruster, 150)
+        if xboxControlId == 14: # turns all thrusters off
+            controls.thrusterOn(frontRThruster, 150)
+            controls.thrusterOn(frontLThruster, 150)
+            controls.thrusterOn(backRThruster, 150)
+            controls.thrusterOn(backLThruster, 150)
+            controls.thrusterOn(midRThruster, 150)
+            controls.thrusterOn(midLThruster, 150)
 
 
 
