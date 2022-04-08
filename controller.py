@@ -29,7 +29,7 @@ Left DPAD
 
 import pygame
 from pygame.locals import *
-from pygame.time import Clock
+# from pygame.time import Clock
 import os, sys
 import threading
 import time
@@ -394,12 +394,14 @@ if __name__ == '__main__':
     clawServo = 2
     topSpeed = 200
     minSpeed = 100
-    currClawDeg = 0
-    currClawRotateDeg = 0
+    currClawDeg = 0 # just the claw's clamp thingy
+    currClawRotateDeg = 0 # whole claw thingy
+    currCameraServoDeg = 0
     rotateRight = False
     rotateLeft = False
     controls = Controls()
     controls.startThread()
+
     #generic call back
     def controlCallBack(xboxControlId, value):
 
@@ -468,25 +470,24 @@ if __name__ == '__main__':
 
         if xboxControlId == 17: # up-down movement
             # thrusterStrength = 50 * value[1] + 150
+
             if value[1] > 0: # move up
                 controls.thrusterOn(midLThruster, 200)    
                 controls.thrusterOn(midRThruster, 200)
-            elif value[0] < 0: # move down
+            elif value[1] < 0: # move down
                 controls.thrusterOn(midLThruster, 100)    
                 controls.thrusterOn(midRThruster, 100)
 
-            if value[0] > 0: # tilting
+            if value[0] > 0: # tilting to the right
                 controls.thrusterOn(midLThruster, 200) # tilt to the right
             elif value[0] < 0: # tilt to the left
                 controls.thrusterOn(midRThruster, 200)
             
             #reset, CHANGE THIS
-            if value[0] == 0:
+            if value[0] == 0 and value[1] == 0:
                 controls.thrusterOn(midLThruster, 150)
                 controls.thrusterOn(midRThruster, 150)
-            if value[1] == 0:
-                controls.thrusterOn(midLThruster, 150)
-                controls.thrusterOn(midLThruster, 150)
+
 
         if xboxControlId == 2: # rotating to the left
             # thrusterStrength = (value + 100) / 4 + 150
@@ -516,22 +517,76 @@ if __name__ == '__main__':
 
 
         if xboxControlId == 6: # close the claw
-            controls.setClawDeg(clawServo, 89)
-
-        if xboxControlId == 7: # opent the claw
+            print("CLosing the claw...")
             controls.setClawDeg(clawServo, 1)
 
-        if xboxControlId == 8: # rotate the claw one way
-            pass
+        if xboxControlId == 7: # opent the claw
+            print("Opening the claw...")
+            controls.setClawDeg(clawServo, 89)
 
-        if xboxControlId == 9: # roate the claw the other way
-            pass
+        if xboxControlId == 10: # rotate the claw one way
+            # if value == 1:
+            #     currClawRotateDeg -= 5
+            #     if currClawRotateDeg < 0:
+            #         currClawRotateDeg = 0
+            #     controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+
+            if value == 1:
+                if currClawRotateDeg - 5 < 0:
+                    currClawRotateDeg = 0
+                else:
+                    currClawRotateDeg -= 5
+                print(f"{currClawRotateDeg = }")
+                controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+
+        if xboxControlId == 11:
+            if value == 1:
+                if currClawRotateDeg + 5 > 180:
+                    currClawRotateDeg = 180
+                else:
+                    currClawRotateDeg + 5
+                print(f"{currClawRotateDeg = }")
+                controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+
+        if xboxControlId == 8: 
+            if value == 1:
+                currCameraServoDeg -= 5
+                if currCameraServoDeg < 0:
+                    currCameraServoDeg = 0
+                print(f"{currCameraServoDeg = }")
+                controls.setClawDeg(cameraServo, currCameraServoDeg)
+
+        if xboxControlId == 9:
+            if value == 1:
+                currCameraServoDeg += 5
+                if currCameraServoDeg > 180:
+                    currCameraServoDeg = 180
+                print(f"{currCameraServoDeg = }")
+                controls.setClawDeg(cameraServo, currCameraServoDeg)
+
+        if xboxControlId == 11: # roate the claw the other way
+            if value == 1:
+                currClawRotateDeg += 5
+                if currClawRotateDeg > 180:
+                    currClawRotateDeg = 180
+                controls.setClawDeg(clawRotateServo, currClawRotateDeg)
+            else:
+                pass
+
+        # if xboxControlId == [x button]: # turns all thrusters off
+        #     controls.thrusterOn(frontRThruster, 150)
+        #     controls.thrusterOn(frontLThruster, 150)
+        #     controls.thrusterOn(backRThruster, 150)
+        #     controls.thrusterOn(backLThruster, 150)
+        #     controls.thrusterOn(midRThruster, 150)
+        #     controls.thrusterOn(midLThruster, 150)
+
+
+
 
         # if xboxControlId == [id of the middle 'X' button]:
         #     stop all the claw movements
 
-        # if xboxControlId == [id of the middle left button]: 
-        #     stop all the thrusters
         
         
     
