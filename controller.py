@@ -402,11 +402,13 @@ if __name__ == '__main__':
     controls.startThread()
     #generic call back
     def controlCallBack(xboxControlId, value):
+
+        # make sure everything is an integer
         if isinstance(value, (int, float)):
-            if value > 200:
-                value = int(200)
-            elif value < 0:
-                value = int(0)
+            if value > 100:
+                value = int(100)
+            elif value < -100:
+                value = int(-100)
             else:
                 value = int(value)
 
