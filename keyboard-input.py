@@ -57,7 +57,7 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "o":[50, -50]
 }
 
-accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x", "3", "4", "c", "v"]
 wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
 ikuo_keys = ["i", "k", "u", "o"]
 
@@ -179,6 +179,14 @@ def on_press(key):
             currClawRotateDeg += 10
         controls.setClawDeg(clawRotateServo, currClawRotateDeg)
 
+    elif char == "3":
+        controls.setClawDeg(clawRotateServo, 0)
+    
+    elif char == "4":
+        controls.setClawDeg(clawRotateServo, 90)
+
+
+
     elif char == "r":
         if currCameraServoDeg - 10 < 0:
             currCameraServoDeg = 0
@@ -192,6 +200,11 @@ def on_press(key):
         else:
             currCameraServoDeg += 10
         controls.setClawDeg(cameraServo, currCameraServoDeg)
+    elif char == "c":
+        controls.setClawDeg(cameraServo, 0)
+    elif char == "v":
+        controls.setClawDeg(cameraServo, 90)
+
 
     # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
         
