@@ -197,8 +197,8 @@ def on_press(key):
         controls.setClawDeg(cameraServo, currCameraServoDeg)
 
     elif char == "f":
-        if currCameraServoDeg + 10 > 90:
-            currCameraServoDeg = 90
+        if currCameraServoDeg + 10 > 70:
+            currCameraServoDeg = 70
         else:
             currCameraServoDeg += 10
         controls.setClawDeg(cameraServo, currCameraServoDeg)
