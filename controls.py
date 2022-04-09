@@ -52,6 +52,13 @@ class Controls:
             self.frontRThruster,
         ]
 
+        self.reversed = [
+            self.frontLThruster,
+            self.frontRThruster,
+            self.backLThruster,
+            self.backRThruster
+        ]
+
 
     def startThread(self):
         self.comms.startThread()
@@ -61,6 +68,9 @@ class Controls:
         #Testing, having the input between -50 and 50 instead
         if motor not in self.flip:
             speed *= -1 # MAJOR SPEED FLIP THING
+        if motor in self.reversed:
+            speed *= -1
+            
         speed += 150
         speed = int(speed)
         if (speed > 200):
