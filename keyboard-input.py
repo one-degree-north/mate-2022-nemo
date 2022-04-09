@@ -180,9 +180,11 @@ def on_press(key):
         controls.setClawDeg(clawRotateServo, currClawRotateDeg)
 
     elif char == "3":
+        currClawRotateDeg = 0
         controls.setClawDeg(clawRotateServo, 0)
     
     elif char == "4":
+        currClawRotateDeg = 90
         controls.setClawDeg(clawRotateServo, 90)
 
 
