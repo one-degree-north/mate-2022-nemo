@@ -65,7 +65,7 @@ class Comms:
 
     def commThread(self):
         while True:
-            print("AAAAAAAAA")
+            print(self.arduinoSerial.in_waiting)
             if (self.arduinoSerial.in_waiting >= 7):
                 print("reading sensor input")
                 self.controls.handleInput(self.read())
