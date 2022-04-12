@@ -63,7 +63,7 @@ delta_speed = { # _____ : [front left, front right, back left, back right]
     "o":[50, -50]
 }
 
-accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f"]
+accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x", "3", "4", "c", "v"]
 wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
 ikuo_keys = ["i", "k", "u", "o"]
 
@@ -163,8 +163,15 @@ def on_press(key):
         is_down[char] = True
     else:
         return
+    if char == "x":
+        controls.thrusterOn(frontLThruster, 0)
+        controls.thrusterOn(frontRThruster, 0)
+        controls.thrusterOn(backLThruster, 0)
+        controls.thrusterOn(backRThruster, 0)
+        controls.thrusterOn(midLThruster, 0)
+        controls.thrusterOn(midRThruster, 0)
 
-    if char == "1":
+    elif char == "1":
         if currClawRotateDeg - 10 < 0:
             currClawRotateDeg = 0
         else:
@@ -178,6 +185,16 @@ def on_press(key):
             currClawRotateDeg += 10
         controls.setClawDeg(clawRotateServo, currClawRotateDeg)
 
+    elif char == "3":
+        currClawRotateDeg = 0
+        controls.setClawDeg(clawRotateServo, 0)
+    
+    elif char == "4":
+        currClawRotateDeg = 90
+        controls.setClawDeg(clawRotateServo, 90)
+
+
+
     elif char == "r":
         if currCameraServoDeg - 10 < 0:
             currCameraServoDeg = 0
@@ -186,11 +203,19 @@ def on_press(key):
         controls.setClawDeg(cameraServo, currCameraServoDeg)
 
     elif char == "f":
-        if currCameraServoDeg + 10 > 180:
-            currCameraServoDeg = 180
+        if currCameraServoDeg + 10 > 70:
+            currCameraServoDeg = 70
         else:
             currCameraServoDeg += 10
         controls.setClawDeg(cameraServo, currCameraServoDeg)
+    elif char == "c":
+        currCameraServoDeg = 0
+        controls.setClawDeg(cameraServo, 0)
+
+    elif char == "v":
+        currCameraServoDeg = 70
+        controls.setClawDeg(cameraServo, 70)
+
 
     # controls.setClawDeg(clawRotateServo, currClawRotateDeg)
         
