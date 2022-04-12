@@ -3,9 +3,11 @@ from controls import Controls
 class Automation:
     def __init__(self, controls):
         self.controls = controls
-    def statGyroAutomationLoopThread(self): #automatically corrects bot tilt position 
+    def statGyroAutomationLoopThread(self): #automatically corrects bot tilt position
+        
         pass
-    def stopGyroAutomationLoopThread(self):
+    def stopGyroAutomationLoopThread(self): #stops correcting tilt position
+        
         pass
     def gyroAutomationLoop(self):
         if (self.controls.gyroData[0] > 10):

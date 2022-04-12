@@ -22,12 +22,6 @@ def testAutoReport():
     controls.setAutoReport(command=0x1E)
     
     while True:
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
         print("gyro data: ")
         print(controls.gyroData)
         print("accelData: ")
