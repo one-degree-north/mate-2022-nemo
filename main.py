@@ -18,6 +18,7 @@ def testServo():
     
 def testAutoReport():
     controls = Controls()
+    controls.startThread()
     controls.setAutoReport(command=0x1C)
     controls.setAutoReport(command=0x1E)
     
