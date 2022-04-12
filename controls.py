@@ -116,6 +116,7 @@ class Controls:
         commands = [0x1C, 0x1D, 0x1E, 0x1F]
         print(command)
         if (not command in commands):
+            print("AAAAAA")
             return -1
         else:
             self.outputQueue.put((0x50, [command, milliseconds]))
