@@ -1,10 +1,26 @@
 from pynput import keyboard
 from controls import Controls
 from sys import exit
+from dataclasses import dataclass
 
 class KeyboardInput:
+
+    @dataclass
+    class Thrusters:
+        fl = 1 # front left
+        fr = 0 # front right
+
+        ml = 2 # mid left
+        mr = 5 # mid right
+
+        bl = 4 # back left
+        br = 3 # back right
+
     def __init__(self):
-        pass
+        self.keys_down = {
+            
+        }
+
     def startKeyboardReading(self): #start keyboard reading
         pass
 
