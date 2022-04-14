@@ -18,16 +18,11 @@ def testServo():
     
 def testAutoReport():
     controls = Controls()
+    controls.startThread()
     controls.setAutoReport(command=0x1C)
     controls.setAutoReport(command=0x1E)
     
     while True:
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
-        controls.handleInput()
         print("gyro data: ")
         print(controls.gyroData)
         print("accelData: ")
@@ -88,5 +83,6 @@ if(__name__ == "__main__"):
     #main()
     #testServo()
     #testCommThreading()
-    testThruster()
+    #testThruster()
     #testServo2()
+    testAutoReport()

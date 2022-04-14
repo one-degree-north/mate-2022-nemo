@@ -2,6 +2,12 @@ from pynput import keyboard
 from controls import Controls
 from sys import exit
 
+class KeyboardInput:
+    def __init__(self):
+        pass
+    def startKeyboardReading(self): #start keyboard reading
+        pass
+
 frontLThruster = 1
 frontRThruster = 0
 midLThruster = 2
