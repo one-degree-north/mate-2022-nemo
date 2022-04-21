@@ -17,7 +17,6 @@ class KeyboardInput:
         br = 3 # back right
 
     def __init__(self):
-<<<<<<< HEAD
         frontLThruster = 1
         frontRThruster = 0
         midLThruster = 2
@@ -76,12 +75,10 @@ class KeyboardInput:
         accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x", "3", "4", "c", "v"]
         wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
         ikuo_keys = ["i", "k", "u", "o"]
-=======
         self.keys_down = {
             
         }
 
->>>>>>> 1a580da7d488c1ef32a3e935d30c1ba9fa408441
     def startKeyboardReading(self): #start keyboard reading
         pass
     
