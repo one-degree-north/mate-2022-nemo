@@ -117,6 +117,11 @@ class Keyhoard():
         else:
             print("key is not recognized")
 
+    def is_down(self, key):
+        if self.key_states[key] == True:
+            return True
+        return False
+
         
 k = Keyhoard()
 k.start()
@@ -125,13 +130,27 @@ k.start()
 def on_press(key):
     try:
         char = key.char
-        print(k.key_states)
+        if not k.is_down(char):
+
+            # insert functionality here
+
+            print("thingy" + char)
+            k.change_key_state(char, True)
+
+
     except AttributeError:
         return      
 
 def on_release(key):
     try:
         char = key.char
+        if k.is_down(char):
+            print("yay " + char)
+
+
+            # the stuff goes on here
+
+            k.change_key_state(char, False)
     except AttributeError:
         return
 
