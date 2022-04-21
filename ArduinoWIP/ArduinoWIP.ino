@@ -1,4 +1,4 @@
-#define Serial Serial1
+//#define Serial Serial1
 
 #include <Wire.h>
 #include <SPI.h>
@@ -66,7 +66,7 @@ int sensorTimes[5];
 int deltaTime;
 unsigned long pastMicros;
 
-Adafruit_BNO055 bnoIMU = Adafruit_BNO055(55);
+Adafruit_BNO055 bnoIMU = Adafruit_BNO055(55, 0x28);
 
 
 void setup(){
@@ -111,7 +111,7 @@ void readInputsDebug2(){
       setAutoReport(0x1E, 1000);
     }
     if (input == '1'){
-      moveClaw(1, 45);
+      sendOrientation();
     }
     else if (input == '2'){
       moveClaw(1, 91);
@@ -283,9 +283,6 @@ void sendOrientation(){
   float orientationValues[3];
   //Serial.write(orientationValues[0]);
   getOrientation(orientationValues);
-
-  //Serial.write(orientationValues[0]);
-  
   sendReturnPacket(0x1E, orientationValues[0], 0x00);
   sendReturnPacket(0x1E, orientationValues[1], 0x30);
   sendReturnPacket(0x1E, orientationValues[2], 0x60);

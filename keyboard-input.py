@@ -4,9 +4,67 @@ from sys import exit
 
 class KeyboardInput:
     def __init__(self):
-        pass
+        frontLThruster = 1
+        frontRThruster = 0
+        midLThruster = 2
+        midRThruster = 5
+        backLThruster = 4
+        backRThruster = 3
+
+        cameraServo = 0
+        clawRotateServo = 1
+        clawServo = 2
+
+        topSpeed = 200
+        minSpeed = 100
+
+        currClawDeg = 0 # just the claw's clamp thingy
+        currClawRotateDeg = 0 # whole claw thingy
+        currCameraServoDeg = 0
+
+        rotateRight = False
+        rotateLeft = False
+        controls = Controls()
+        controls.startThread()
+
+        is_down = {
+            "w": False,
+            "a": False,
+            "s": False,
+            "d": False,
+            "j": False,
+            "l": False,
+
+            "i": False,
+            "k": False,
+            "u": False,
+            "o": False,
+
+            "e": False,
+        }
+
+        claw_is_clamped = False
+
+        delta_speed = { # _____ : [front left, front right, back left, back right]
+            "w": [50, 50, 50, 50], #front
+            "a": [-50, 50, 50, -50], #left
+            "s": [-50, -50, -50, -50], #back
+            "d": [50, -50, -50, 50], #right
+            "j": [-50, 50, -50, 50], #rotate
+            "l": [50, -50, 50, -50], #rotate
+
+            "i": [50, 50], #
+            "k": [-50, -50],
+            "u": [-50, 50],
+            "o":[50, -50]
+        }
+
+        accepted_chars = ["w", "a", "s", "d", "j", "l", "i", "k", "u", "o", "e", "1", "2", "r", "f", "x", "3", "4", "c", "v"]
+        wasdjl_keys = ["w", "a", "s", "d", "j", "l"]
+        ikuo_keys = ["i", "k", "u", "o"]
     def startKeyboardReading(self): #start keyboard reading
         pass
+    
 
 frontLThruster = 1
 frontRThruster = 0

@@ -5,7 +5,8 @@ from serial import *
 class Comms:
     def __init__(self, outputQueue=None, controls=None):
         port_no = int(input("port no: "))
-        self.arduinoSerial = Serial(port=f"/dev/ttyUSB{port_no}", baudrate=9600)
+        #self.arduinoSerial = Serial(port=f"/dev/ttyUSB{port_no}", baudrate=9600)
+        self.arduinoSerial = Serial(port=f"/dev/cu.usbmodem14201", baudrate=9600)
         # "/dev/ttyS0"
         #"/dev/cu.usbmodem14201"
         #eh make these static
@@ -65,9 +66,8 @@ class Comms:
 
     def commThread(self):
         while True:
-            print(self.arduinoSerial.in_waiting)
             if (self.arduinoSerial.in_waiting >= 7):
-                print("reading sensor input")
+                #print("reading sensor input")
                 self.controls.handleInput(self.read())
             if (not self.outputQueue.empty()):
                 currOutputValue = self.outputQueue.get()

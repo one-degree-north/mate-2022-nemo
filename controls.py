@@ -128,14 +128,14 @@ class Controls:
 
     def handleInput(self, returnBytes):
         #what the hell
-        #print("handling input:")
+        print(returnBytes)
         #returnBytes = self.comms.read()
         if (returnBytes == -1):
             #print("rip")
             return -1
         
         command = returnBytes[0]
-        #print(command)
+        #print(chr(command))
         #print(type(command))
         value = returnBytes[1]
         if (command == bytes.fromhex("1C")):
@@ -151,7 +151,7 @@ class Controls:
         pass
 
     def handleAccelReturn(self, returnBytes):
-        #print("updating accel")
+        print("updating accel")
         if (returnBytes[1] == bytes.fromhex("00")):
             self.accelData[0] = returnBytes[2]
         elif(returnBytes[1] == bytes.fromhex("30")):
@@ -160,7 +160,8 @@ class Controls:
             self.accelData[2] = returnBytes[2]
 
     def handleGyroReturn(self, returnBytes):
-        #print("updating gyro")
+        print("updating gyro")
+        print(returnBytes[2])
         if (returnBytes[1] == bytes.fromhex("00")):
             self.gyroData[0] = returnBytes[2]
         elif(returnBytes[1] == bytes.fromhex("30")):

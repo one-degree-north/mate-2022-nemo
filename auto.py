@@ -14,3 +14,27 @@ class Automation:
             pass
         elif (self.controls.gyroData[0] < -10):
             pass
+
+class TiltCompensation:
+    def __init__(self, controls):
+        targetTilt = 90
+        currTilt = 90
+        tiltSpeed = 3
+        tiltMotorArr = [50, -50, -50, 50]
+        pass
+    def startThread(self):
+        pass
+    def copensateTilt(self):
+        #update currentTilt
+        deltaTilt = (self.currTilt - self.targetTilt) % 360
+        if (deltaTilt < 0):
+            deltaTilt + 360
+        if (abs(deltaTilt) > 180):
+            deltaTilt -= 180
+            deltaTilt  *= -1
+        deltaTiltArr = []
+        for motorStrength in self.tiltMotorArr:
+            deltaTiltArr.append(motorStrength * deltaTilt)
+        
+        #move thrusters by tiltSpeed * deltaTilt. If negative, move 
+    pass
