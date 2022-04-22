@@ -64,7 +64,7 @@ class Keyhoard():
 
     def pressed_keys(self):
         output_keys = []
-        for key, is_pressed in self.key_states:
+        for key, is_pressed in self.key_states.items():
             if is_pressed:
                 output_keys.append(key)
         return output_keys
@@ -83,6 +83,8 @@ class Keyhoard():
         for pressed_key in self.pressed_keys():
             ksms = self.speed_modifiers[pressed_key] # key speed modifier set
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
+                
+                print("incrementing horiz divisor")
                 horiz_divisor += 1
                 front_left_speed += ksms[0]
                 front_right_speed += ksms[1]
@@ -90,9 +92,16 @@ class Keyhoard():
                 back_right_speed += ksms[3]
 
             elif pressed_key in self.height_action_keys or pressed_key in self.tilt_action_keys:
+                print("incrementing vert divisor")
                 vert_divisor += 1
                 mid_left_speed += ksms[0]
                 mid_right_speed += ksms[1]
+
+        # probably not the best way to do this
+        if horiz_divisor == 0:
+            horiz_divisor = 1
+        if vert_divisor == 0:
+            vert_divisor = 1
 
         front_left_speed = front_left_speed / horiz_divisor
         front_right_speed = front_right_speed / horiz_divisor
@@ -134,8 +143,9 @@ def on_press(key):
 
             # insert functionality here
 
-            print("thingy" + char)
             k.change_key_state(char, True)
+            print(k.thruster_speeds())
+            print()
 
 
     except AttributeError:
@@ -145,12 +155,12 @@ def on_release(key):
     try:
         char = key.char
         if k.is_down(char):
-            print("yay " + char)
-
 
             # the stuff goes on here
 
             k.change_key_state(char, False)
+            print(k.key_states)
+            print()
     except AttributeError:
         return
 
