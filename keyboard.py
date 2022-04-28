@@ -84,7 +84,7 @@ class Keyhoard():
             ksms = self.speed_modifiers[pressed_key] # key speed modifier set
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
                 
-                print("incrementing horiz divisor")
+                # print("incrementing horiz divisor")
                 horiz_divisor += 1
                 front_left_speed += ksms[0]
                 front_right_speed += ksms[1]
@@ -92,7 +92,7 @@ class Keyhoard():
                 back_right_speed += ksms[3]
 
             elif pressed_key in self.height_action_keys or pressed_key in self.tilt_action_keys:
-                print("incrementing vert divisor")
+                # print("incrementing vert divisor")
                 vert_divisor += 1
                 mid_left_speed += ksms[0]
                 mid_right_speed += ksms[1]
@@ -131,7 +131,17 @@ class Keyhoard():
             return True
         return False
 
-        
+def show_thruster_speeds(ts):
+
+    print(f"\nfront left\t: {ts[0]}")
+    print(f"front right\t: {ts[1]}")
+    print(f"mid left\t: {ts[2]}")
+    print(f"mid right\t: {ts[3]}")
+    print(f"back left\t: {ts[4]}")
+    print(f"back right\t: {ts[5]}")
+
+
+
 k = Keyhoard()
 k.start()
 
@@ -139,28 +149,29 @@ k.start()
 def on_press(key):
     try:
         char = key.char
+        if char not in k.key_states.keys():
+            print("Key not recognized...")
+            return
         if not k.is_down(char):
-
-            # insert functionality here
-
             k.change_key_state(char, True)
-            print(k.thruster_speeds())
-            print()
+            ts = k.thruster_speeds()
+            show_thruster_speeds(ts=ts)
 
 
     except AttributeError:
-        return      
+        return     
 
 def on_release(key):
     try:
         char = key.char
+        if char not in k.key_states.keys():
+            print("Key not recognized...")
+            return
         if k.is_down(char):
-
-            # the stuff goes on here
-
             k.change_key_state(char, False)
-            print(k.key_states)
-            print()
+            ts = k.thruster_speeds()
+            show_thruster_speeds(ts=ts)
+
     except AttributeError:
         return
 
