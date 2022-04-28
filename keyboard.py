@@ -32,6 +32,12 @@ class Keyhoard():
             "o": False,
 
             "e": False,
+            "r": False,
+            "f": False,
+
+            "c": False,
+            "g": False,
+            "v": False,
         }
 
         self.speed_modifiers = {
@@ -53,8 +59,16 @@ class Keyhoard():
         self.height_action_keys = ["i", "k"]
         self.tilt_action_keys = ["u", "o"]
         self.rotate_action_keys = ["j", "l"]
+        self.clamp_action_keys = ["e", "r", "f"]
+        self.camera_action_keys = ["c", "g", "v"]
+
+        self.clamp_angle = 0
+        self.clamp_min_max_angle = [0, 90]
 
         self.claw_is_clamped = False
+
+        self.camera_angle = 0
+        self.camera_min_max_angle = [0, 90]
 
         self.print_values = True
 
@@ -77,11 +91,46 @@ class Keyhoard():
         back_left_speed = 0
         back_right_speed = 0
 
+
+
         horiz_divisor = 0
         vert_divisor = 0
 
         for pressed_key in self.pressed_keys():
-            ksms = self.speed_modifiers[pressed_key] # key speed modifier set
+            try:
+                ksms = self.speed_modifiers[pressed_key] # key speed modifier set
+            except KeyError:
+                if pressed_key in self.clamp_action_keys:
+                    if pressed_key == "e":
+                        to_max = self.clamp_min_max_angle[1] - self.clamp_angle
+                        to_min = self.clamp_angle - self.clamp_min_max_angle[0]
+                        if to_min < to_max:
+                            self.clamp_angle = self.clamp_min_max_angle[1]
+                        else:
+                            self.clamp_angle = self.clamp_min_max_angle[0]
+                    elif pressed_key == "r":
+                        self.clamp_angle += 15
+                        self.clamp_angle = self.clamp_min_max_angle[1] if self.clamp_angle > self.clamp_min_max_angle[1] else self.clamp_angle
+                    elif pressed_key == "f":
+                        self.clamp_angle -= 15
+                        self.clamp_angle = self.clamp_min_max_angle[0] if self.clamp_angle < self.clamp_min_max_angle[0] else self.clamp_angle
+
+                elif pressed_key in self.camera_action_keys:
+                    if pressed_key == "c":
+                        to_max = self.camera_min_max_angle[1] - self.camera_angle
+                        to_min = self.camera_angle - self.camera_min_max_angle[0]
+                        if to_min < to_max:
+                            self.camera_angle = self.camera_min_max_angle[1]
+                        else:
+                            self.camera_angle = self.camera_min_max_angle[0]
+                    elif pressed_key == "g":
+                        self.camera_angle += 15
+                        self.camera_angle = self.camera_min_max_angle[1] if self.camera_angle > self.camera_min_max_angle[1] else self.camera_angle
+                    elif pressed_key == "v":
+                        self.camera_angle -= 15
+                        self.camera_angle = self.camera_min_max_angle[0] if self.camera_angle < self.camera_min_max_angle[0] else self.camera_angle
+            
+            
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
                 
                 # print("incrementing horiz divisor")
@@ -97,7 +146,9 @@ class Keyhoard():
                 mid_left_speed += ksms[0]
                 mid_right_speed += ksms[1]
 
-        # probably not the best way to do this
+
+
+
         if horiz_divisor == 0:
             horiz_divisor = 1
         if vert_divisor == 0:
@@ -118,6 +169,9 @@ class Keyhoard():
             mid_right_speed,
             back_left_speed,
             back_right_speed,
+
+            self.clamp_angle,
+            self.camera_angle,
         ]
 
     def change_key_state(self, key, new_state):
@@ -139,6 +193,11 @@ def show_thruster_speeds(ts):
     print(f"mid right\t: {ts[3]}")
     print(f"back left\t: {ts[4]}")
     print(f"back right\t: {ts[5]}")
+    print(f"clamp angle\t: {ts[6]}")
+    print(f"camera angle\t: {ts[7]}")
+
+
+    ######### CALL THE CONTROLS HERE ###########
 
 
 
