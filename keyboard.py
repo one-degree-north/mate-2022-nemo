@@ -1,21 +1,26 @@
 
+# from queue import Queue
+from tkinter import *
 from pynput import keyboard
 from dataclasses import dataclass
+from controls import Controls
+from botview import XboxViewer
+import multiprocessing as mp
+from multiprocessing import Queue
+
+
+@dataclass
+class Thrusters:
+    front_left = 1
+    front_right = 0
+
+    mid_left = 2
+    mid_right = 5
+
+    back_left = 4
+    back_right = 3
 
 class Keyhoard():
-
-    @dataclass
-    class Thrusters:
-        front_left = 1
-        front_right = 0
-
-        mid_left = 2
-        mid_right = 5
-
-        back_left = 4
-        back_right = 3
-
-
     def __init__(self):
         self.key_states = {
             "w": False,
@@ -72,7 +77,6 @@ class Keyhoard():
 
         self.print_values = True
 
-
     def start(self):
         pass
 
@@ -90,8 +94,6 @@ class Keyhoard():
         mid_right_speed = 0
         back_left_speed = 0
         back_right_speed = 0
-
-
 
         horiz_divisor = 0
         vert_divisor = 0
@@ -132,8 +134,6 @@ class Keyhoard():
             
             
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
-                
-                # print("incrementing horiz divisor")
                 horiz_divisor += 1
                 front_left_speed += ksms[0]
                 front_right_speed += ksms[1]
@@ -141,13 +141,9 @@ class Keyhoard():
                 back_right_speed += ksms[3]
 
             elif pressed_key in self.height_action_keys or pressed_key in self.tilt_action_keys:
-                # print("incrementing vert divisor")
                 vert_divisor += 1
                 mid_left_speed += ksms[0]
                 mid_right_speed += ksms[1]
-
-
-
 
         if horiz_divisor == 0:
             horiz_divisor = 1
@@ -185,27 +181,60 @@ class Keyhoard():
             return True
         return False
 
-def show_thruster_speeds(ts):
+def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
-    print(f"\nfront left\t: {ts[0]}")
-    print(f"front right\t: {ts[1]}")
-    print(f"mid left\t: {ts[2]}")
-    print(f"mid right\t: {ts[3]}")
-    print(f"back left\t: {ts[4]}")
-    print(f"back right\t: {ts[5]}")
-    print(f"clamp angle\t: {ts[6]}")
-    print(f"camera angle\t: {ts[7]}")
+    # print(f"\nfront left\t: {ts[0]}")
+    # print(f"front right\t: {ts[1]}")
+    # print(f"mid left\t: {ts[2]}")
+    # print(f"mid right\t: {ts[3]}")
+    # print(f"back left\t: {ts[4]}")
+    # print(f"back right\t: {ts[5]}")
+    # print(f"clamp angle\t: {ts[6]}")
+    # print(f"camera angle\t: {ts[7]}")
 
 
     ######### CALL THE CONTROLS HERE ###########
+    # controls.thrusterOn(Thrusters.front_left, ts[0])
+    # controls.thrusterOn(Thrusters.front_right, ts[1])
+    # controls.thrusterOn(Thrusters.mid_left, ts[2])
+    # controls.thrusterOn(Thrusters.mid_right, ts[3])
+    # controls.thrusterOn(Thrusters.back_left, ts[4])
+    # controls.thrusterOn(Thrusters.back_right, ts[5])
 
+    ######### ADJUSTING THE GUI ##########
+    pass
+
+
+    
 
 
 k = Keyhoard()
 k.start()
+pipe = Queue()
 
+def create_view():
+    global pipe
+    root = Tk()
+    root.title("XBox Viewer")
+    root.geometry("500x500")
+
+
+    viewer = XboxViewer(root, bg="white", width=500, height=500)
+    viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
+
+
+    def checker():
+        print("checking")
+        if not pipe.empty():
+            print(pipe.get())
+
+        viewer.after(1000, checker)
+    checker()
+
+    root.mainloop()
 
 def on_press(key):
+    global pipe
     try:
         char = key.char
         if char not in k.key_states.keys():
@@ -214,13 +243,14 @@ def on_press(key):
         if not k.is_down(char):
             k.change_key_state(char, True)
             ts = k.thruster_speeds()
-            show_thruster_speeds(ts=ts)
-
+            show_thruster_speeds(ts=ts, controls=None)
+            pipe.put("Hello")
 
     except AttributeError:
-        return     
+        return
 
 def on_release(key):
+    global pipe
     try:
         char = key.char
         if char not in k.key_states.keys():
@@ -229,14 +259,11 @@ def on_release(key):
         if k.is_down(char):
             k.change_key_state(char, False)
             ts = k.thruster_speeds()
-            show_thruster_speeds(ts=ts)
+            show_thruster_speeds(ts=ts, controls=None)
+            pipe.put("Hello")
 
     except AttributeError:
         return
-
-    
-
-
 
 def main():
     keyboardListener = keyboard.Listener(on_press=on_press, on_release=on_release)
@@ -245,4 +272,15 @@ def main():
         pass
 
 if __name__ == "__main__":
-    main()
+    # pipe.put("Hello")
+
+    print("\n"*10)
+
+    keyboard_thread = mp.Process(target=main)
+    gui_thread = mp.Process(target=create_view)
+
+    gui_thread.start()
+    keyboard_thread.start()
+    
+    keyboard_thread.join()
+    gui_thread.join()
