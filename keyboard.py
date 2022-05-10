@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from controls import Controls
 from botview import XboxViewer
 import multiprocessing as mp
-from multiprocessing import Queue
+# from queue import Queue
+
+from math import cos, sin, radians
 
 
 @dataclass
@@ -210,10 +212,9 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
-pipe = Queue()
 
-def create_view():
-    global pipe
+
+def create_view(pipe):
     root = Tk()
     root.title("XBox Viewer")
     root.geometry("500x500")
@@ -224,60 +225,117 @@ def create_view():
 
 
     def checker():
-        print("checking")
         if not pipe.empty():
-            print(pipe.get())
+            ts = pipe.get()
 
-        viewer.after(1000, checker)
+            # 21 long, 15.5 wide
+            # 98.569 degrees
+            # 45 + asin(7.75 / 15) / acos(7.75 / 15)
+            # 36.431 + 45 degrees
+
+
+
+
+            front_left_torque = ts[0] * cos(radians(98.569 - 90))
+            front_right_torque = -ts[1] * cos(radians(98.569 - 90))
+            back_left_torque = ts[4] * cos(radians(90 - (36.431 + 45)))
+            back_right_torque = -ts[5] * cos(radians(90 - (36.431 + 45)))
+
+            front_left_y = ts[0] * sin(radians(45))
+            front_right_y = ts[1] * sin(radians(135))
+            back_left_y = ts[4] * sin(radians(135))
+            back_right_y = ts[5] * sin(radians(45))
+
+            front_left_x = round(ts[0] * cos(radians(45)), 3)
+            front_right_x = round(ts[1] * cos(radians(135)), 3)
+            back_left_x = round(ts[4] * cos(radians(135)), 3)
+            back_right_x = round(ts[5] * cos(radians(45)),3)
+
+            
+
+
+            # print(f"{front_left_torque = }\t")
+            # print(f"{front_right_torque = }\t")
+            # print(f"{back_left_torque = }\t")
+            # print(f"{back_right_torque = }\t")
+            net_torque = round(front_left_torque + front_right_torque + back_left_torque + back_right_torque, 1)
+            net_y = round(front_left_y + front_right_y + back_left_y + back_right_y, 1)
+            net_x = front_left_x + front_right_x + back_left_x + back_right_x
+
+            print(f"{net_torque = }")
+            print(f"{net_y = }")
+            print(f"{net_x = }")
+
+            # print(f"{front_left_y = }")
+            # print(f"{front_right_y = }")
+            # print(f"{back_left_y = }")
+            # print(f"{back_right_y = }")
+            # print(f"{front_left_x = }")
+            # print(f"{front_right_x = }")
+            # print(f"{back_left_x = }")
+            # print(f"{back_right_x = }")
+            print()
+
+
+            viewer.test3.edit((net_x / 150, net_y / 150))
+
+
+        viewer.after(10, checker)
     checker()
 
     root.mainloop()
 
-def on_press(key):
-    global pipe
-    try:
-        char = key.char
-        if char not in k.key_states.keys():
-            print("Key not recognized...")
+
+
+def main(pipe):
+    def on_press(key):
+        try:
+            char = key.char
+            if char not in k.key_states.keys():
+                print("Key not recognized...")
+                return
+            if not k.is_down(char):
+                k.change_key_state(char, True)
+                ts = k.thruster_speeds()
+                show_thruster_speeds(ts=ts, controls=None)
+                pipe.put(ts)
+
+
+        except AttributeError:
             return
-        if not k.is_down(char):
-            k.change_key_state(char, True)
-            ts = k.thruster_speeds()
-            show_thruster_speeds(ts=ts, controls=None)
-            pipe.put("Hello")
 
-    except AttributeError:
-        return
+    def on_release(key):
+        try:
+            char = key.char
+            if char not in k.key_states.keys():
+                print("Key not recognized...")
+                return
+            if k.is_down(char):
+                k.change_key_state(char, False)
+                ts = k.thruster_speeds()
+                show_thruster_speeds(ts=ts, controls=None)
+                pipe.put(ts)
 
-def on_release(key):
-    global pipe
-    try:
-        char = key.char
-        if char not in k.key_states.keys():
-            print("Key not recognized...")
+
+        except AttributeError:
             return
-        if k.is_down(char):
-            k.change_key_state(char, False)
-            ts = k.thruster_speeds()
-            show_thruster_speeds(ts=ts, controls=None)
-            pipe.put("Hello")
 
-    except AttributeError:
-        return
 
-def main():
     keyboardListener = keyboard.Listener(on_press=on_press, on_release=on_release)
     keyboardListener.start()
     while True:
         pass
 
+
+
 if __name__ == "__main__":
     # pipe.put("Hello")
+    pipe = mp.Queue()
 
-    print("\n"*10)
 
-    keyboard_thread = mp.Process(target=main)
-    gui_thread = mp.Process(target=create_view)
+    gui_thread = mp.Process(target=create_view, args=(pipe,))
+    keyboard_thread = mp.Process(target=main, args=(pipe,))
+
 
     gui_thread.start()
     keyboard_thread.start()

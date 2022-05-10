@@ -71,8 +71,8 @@ class XboxViewer(Frame):
 
         def nudge_amount(self):
             return (
-                (self.activation[0] / 100) * self.radius[0],
-                (self.activation[1] / 100) * self.radius[0],
+                (self.activation[0]) * self.radius[0],
+                (-self.activation[1]) * self.radius[0],
             )
 
         def corner_coords(self, type):
@@ -188,7 +188,7 @@ class XboxViewer(Frame):
 
         self.c: Canvas = Canvas(self, bg="white", width=500, height=500)
 
-        self.test3 = self.Joystick(self, self.c, 1, (0.25, 0.25), (30, 50), (45, -89))
+        self.test3 = self.Joystick(self, self.c, 1, (0.5, 0.5), (75, 100), (0, 0))
         self.test3.create()
 
         # self.after(10000, self.test4.edit, 0)
@@ -209,22 +209,22 @@ class XboxViewer(Frame):
 
 
 
-# def create_view(q):
-#     root = Tk()
-#     root.title("XBox Viewer")
-#     root.geometry("500x500")
+def create_view():
+    root = Tk()
+    root.title("XBox Viewer")
+    root.geometry("500x500")
 
 
-#     viewer = XboxViewer(root, q, bg="white", width=500, height=500)
-#     viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
+    viewer = XboxViewer(root, bg="white", width=500, height=500)
+    viewer.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)
 
-#     def checker():
-#         print(q.get())
-#         root.after(20, checker)
+    # def checker():
+    #     print(q.get())
+    #     root.after(20, checker)
 
-#     checker()
+    # checker()
 
-#     root.mainloop()
+    root.mainloop()
 
 
             
@@ -234,8 +234,8 @@ class XboxViewer(Frame):
 
 
 
-# if __name__ == "__main__":   
-    # create_view()
+if __name__ == "__main__":   
+    create_view()
 
 
 
