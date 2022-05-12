@@ -35,9 +35,9 @@ class Controls:
         self.midRThruster = 5
         self.backLThruster = 4
         self.backRThruster = 3
-        self.cameraServo = 0
-        self.clawRotateServo = 1
-        self.clawServo = 2
+        self.cameraServo = 2
+        self.clawRotateServo = 0
+        self.clawServo = 1
         self.topSpeed = 200
         self.minSpeed = 100
         self.currClawDeg = 0 # just the claw's clamp thingy

@@ -1,8 +1,10 @@
 from controls import Controls
+import time
 #includes gyro tilt automation, (maybe) stopping thrust when not holding down, water already does this though
 class Automation:
     def __init__(self, controls):
         self.controls = controls
+        self.tiltAuto = TiltCompensation(controls)
     def statGyroAutomationLoopThread(self): #automatically corrects bot tilt position
         
         pass
@@ -10,10 +12,12 @@ class Automation:
         
         pass
     def gyroAutomationLoop(self):
-        if (self.controls.gyroData[0] > 10):
-            pass
-        elif (self.controls.gyroData[0] < -10):
-            pass
+        while True:
+            if (self.controls.gyroData[0] > 10 or self.controls.gyroData[0] < -10):
+                #tiltAmount.currTilt = 
+                tiltAmount = self.tiltAuto.compensateTilt()
+
+            time.sleep(1)
 
 class TiltCompensation:
     def __init__(self, controls):

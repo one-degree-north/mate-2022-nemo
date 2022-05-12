@@ -33,7 +33,7 @@ int thrusterPins[] = {7, 9, 10, 11, 12, 13};
 
 Servo thrusterServos[6];
 
-int clawPins[] = {A4, A5, 2};
+int clawPins[] = {3, 4, 5};
 Servo clawServos[3];
 
 
