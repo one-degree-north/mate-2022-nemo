@@ -185,23 +185,22 @@ class Keyhoard():
 
 def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
-    # print(f"\nfront left\t: {ts[0]}")
-    # print(f"front right\t: {ts[1]}")
-    # print(f"mid left\t: {ts[2]}")
-    # print(f"mid right\t: {ts[3]}")
-    # print(f"back left\t: {ts[4]}")
-    # print(f"back right\t: {ts[5]}")
-    # print(f"clamp angle\t: {ts[6]}")
-    # print(f"camera angle\t: {ts[7]}")
-
+    print(f"\nfront left\t: {ts[0]}")
+    print(f"front right\t: {ts[1]}")
+    print(f"mid left\t: {ts[2]}")
+    print(f"mid right\t: {ts[3]}")
+    print(f"back left\t: {ts[4]}")
+    print(f"back right\t: {ts[5]}")
+    print(f"clamp angle\t: {ts[6]}")
+    print(f"camera angle\t: {ts[7]}")
 
     ######### CALL THE CONTROLS HERE ###########
-    # controls.thrusterOn(Thrusters.front_left, ts[0])
-    # controls.thrusterOn(Thrusters.front_right, ts[1])
-    # controls.thrusterOn(Thrusters.mid_left, ts[2])
-    # controls.thrusterOn(Thrusters.mid_right, ts[3])
-    # controls.thrusterOn(Thrusters.back_left, ts[4])
-    # controls.thrusterOn(Thrusters.back_right, ts[5])
+    controls.thrusterOn(Thrusters.front_left, ts[0])
+    controls.thrusterOn(Thrusters.front_right, ts[1])
+    controls.thrusterOn(Thrusters.mid_left, ts[2])
+    controls.thrusterOn(Thrusters.mid_right, ts[3])
+    controls.thrusterOn(Thrusters.back_left, ts[4])
+    controls.thrusterOn(Thrusters.back_right, ts[5])
 
     ######### ADJUSTING THE GUI ##########
     pass
@@ -212,6 +211,8 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
+controls = Controls()
+controls.startThread()
 
 
 def create_view(pipe):
@@ -258,11 +259,15 @@ def create_view(pipe):
             # print(f"{front_right_torque = }\t")
             # print(f"{back_left_torque = }\t")
             # print(f"{back_right_torque = }\t")
-            net_torque = round(front_left_torque + front_right_torque + back_left_torque + back_right_torque, 1)
+            net_torque_z = round(front_left_torque + front_right_torque + back_left_torque + back_right_torque, 1)
+            net_torque_y = 7.75 * ts[2] - 7.75 * ts[3]
+            net_z = ts[2] + ts[3]
             net_y = round(front_left_y + front_right_y + back_left_y + back_right_y, 1)
             net_x = front_left_x + front_right_x + back_left_x + back_right_x
 
-            print(f"{net_torque = }")
+            print(f"{net_torque_z = }")
+            print(f"{net_torque_y = }")
+            print(f"{net_z = }")
             print(f"{net_y = }")
             print(f"{net_x = }")
 
@@ -278,6 +283,8 @@ def create_view(pipe):
 
 
             viewer.test3.edit((net_x / 150, net_y / 150))
+            viewer.test5.edit(net_torque_z / 500)
+            viewer.test7.edit(net_z / 100)
 
 
         viewer.after(10, checker)

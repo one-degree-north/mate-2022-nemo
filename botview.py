@@ -29,7 +29,7 @@ class XboxViewer(Frame):
 
         def create(self):
             cc = self.corner_coords()
-            self.canvas_id = self.canvas.create_oval(cc[0], cc[1], cc[2], cc[3], width=2, fill=self.dip_paintbrush(), outline=self.palette[self.element_no]["off"]) 
+            self.canvas_id = self.canvas.create_oval(cc[0], cc[1], cc[2], cc[3], width=0, fill=self.dip_paintbrush()) 
 
         def edit(self, val):
             if self.activation != val:
@@ -50,7 +50,7 @@ class XboxViewer(Frame):
             return (x, y)
 
         def dip_paintbrush(self):
-            return "white"
+            return "#ebebeb"
 
         def shift(self):
             cc = self.corner_coords()
@@ -126,13 +126,14 @@ class XboxViewer(Frame):
             """
             super().__init__(frame_in, canvas, element_no, relpos, radius, activation)
             self.palette = {
-                "bar": "#9c9c9c",
-                "fill": "#32a852"
+                "bar": "#ebebeb",
+                "fill": "#f78ff0"
             }
 
         def create(self):
             bar_cc = self.corner_coords()
             fill_cc = self.fill_coords()
+            print('testing')
             print(bar_cc, fill_cc)
             
             bar = self.canvas.create_rectangle(bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3], fill=self.palette["bar"], width=0)
@@ -154,6 +155,7 @@ class XboxViewer(Frame):
                 bar_cc = self.corner_coords()
                 fill_cc = self.fill_coords()
 
+
                 self.canvas.coords(self.canvas_id[1], bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3])
                 self.canvas.coords(self.canvas_id[0], fill_cc[0], fill_cc[1], fill_cc[2], fill_cc[3])
 
@@ -168,15 +170,94 @@ class XboxViewer(Frame):
             return 2 * self.radius[0] - self.activation / 100 * self.radius[0] * 2
 
         def fill_coords(self):
-            cc = self.corner_coords()
-            amount = self.fill_amount()
-            # print(amount)
-            x0 = cc[0]
-            x1 = cc[2] - amount
-            y0 = cc[1]
-            y1 = cc[3]
+
+            x0 = self.rel2abspos()[0] - self.radius[0]
+            x1 = self.rel2abspos()[0] + self.radius[0]
+            y0 = self.rel2abspos()[1]
+            # y1 = self.rel2abspos()[1] + self.activation * self.radius[1]
+            y1 = self.rel2abspos()[1] - self.activation * self.radius[1]
             return (x0, y0, x1, y1)
 
+    class CircularFill(Control):
+        def __init__(self, frame_in, canvas, element_no, relpos, radius, activation):
+            super().__init__(frame_in, canvas, element_no, relpos, radius, activation)
+            self.palette = {
+                "bar": "#9c9c9c",
+                "fill": "#32a852"
+            }
+
+        def dip_paintbrush(self):
+            return "#80fc79"
+
+        def create(self):
+            cc = self.corner_coords()
+            self.canvas_id = self.canvas.create_arc(cc[0], cc[1], cc[2], cc[3], fill=self.dip_paintbrush(), extent=-(self.activation * 180), start = 90, width=0, outline="white")
+
+        def edit(self, val):
+            if self.activation != val:
+                print("changing")
+                self.activation = val
+                self.canvas.itemconfig(self.canvas_id, extent=-(self.activation*180))
+
+    class SpiritLevel(Control):
+        def __init__(self, frame_in, canvas, element_no, relpos, radius, activation):
+            """
+            radius[0] is width of bar, radius[1] is height of bar
+            """
+            super().__init__(frame_in, canvas, element_no, relpos, radius, activation)
+            self.palette = {
+                "bar": "#ebebeb",
+                "bubble": "#a1c1f7"
+            }
+            self.bubble_width = 7
+
+
+        def corner_coords(self):
+            x0 = self.rel2abspos()[0] - self.radius[0]
+            x1 = self.rel2abspos()[0] + self.radius[0]
+            y0 = self.rel2abspos()[1] - self.radius[1]
+            y1 = self.rel2abspos()[1] + self.radius[1]
+            return (x0, y0, x1, y1)
+
+        def bubble_coords(self):
+            x0 = self.rel2abspos()[0] - self.radius[0] * self.activation - self.bubble_width
+            x1 = self.rel2abspos()[0] + self.radius[0] * self.activation + self.bubble_width
+            y0 = self.rel2abspos()[1] + self.bubble_width
+            y1 = self.rel2abspos()[1] - self.bubble_width
+            return (x0, y0, x1, y1)
+
+        def create(self):
+            cc = self.corner_coords()
+            bcc = self.bubble_coords()
+            bar = self.canvas.create_rectangle(cc[0], cc[1], cc[2], cc[3], fill=self.palette["bar"], width=0)
+            bubble = self.canvas.create_oval(bcc[0], bcc[1], bcc[2], bcc[3], fill=self.palette["bubble"], width=0)
+
+            self.canvas_id = (bubble, bar)
+        
+        def shift(self):
+            bar_cc = self.corner_coords()
+            bubble_cc = self.bubble_coords()
+
+            self.canvas.coords(self.canvas_id[1], bar_cc[0], bar_cc[1], bar_cc[2], bar_cc[3])
+            self.canvas.coords(self.canvas_id[0], bubble_cc[0], bubble_cc[1], bubble_cc[2], bubble_cc[3])
+
+        def edit(self, val):
+            if self.activation != val:
+                self.activation = val
+
+                bubble_cc = self.bubble_coords()
+
+                self.canvas.coords(self.canvas_id[0], bubble_cc[0], bubble_cc[1], bubble_cc[2], bubble_cc[3])
+
+    class TiltMeter(Control):
+        def __init__(self, frame_in, canvas, element_no, relpos, radius, activation):
+            """
+            radius is the length of the line
+            """
+            super().__init__(frame_in, canvas, element_no, relpos, radius, activation)
+
+        def create(self):
+            self.canvas.create_line(10, 10, 150, 150, width=4, fill="red")
 
 
     def __init__(self, parent, **kwargs):
@@ -188,8 +269,24 @@ class XboxViewer(Frame):
 
         self.c: Canvas = Canvas(self, bg="white", width=500, height=500)
 
-        self.test3 = self.Joystick(self, self.c, 1, (0.5, 0.5), (75, 100), (0, 0))
+        self.test6 = self.Control(self, self.c, 4, (0.5, 0.5), 110)
+        self.test6.create()
+
+        self.test5 = self.CircularFill(self, self.c, 3, (0.5, 0.5), 110, 0)
+        self.test5.create()
+
+        self.test3 = self.Joystick(self, self.c, 1, (0.5, 0.5), (60, 100), (0, 0))
         self.test3.create()
+
+        self.test7 = self.Trigger(self, self.c, 2, (0.8, 0.5), (10, 50), 0.5)
+        self.test7.create()
+
+        self.test4 = self.SpiritLevel(self, self.c, 5, (0.5, 0.10), (50, 10), 0)
+        self.test4.create()
+
+        self.test8 = self.TiltMeter(self, self.c, 6, (0.9, 0.9), 90, 1)
+        self.test8.create()
+        
 
         # self.after(10000, self.test4.edit, 0)
         # self.after(10000, self.test5.edit, 0)
