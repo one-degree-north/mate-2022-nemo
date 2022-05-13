@@ -262,8 +262,10 @@ class XboxViewer(Frame):
 
         self.test5 = self.ABXY(self, self.c, "9", (0.25, 0.75), 15, 1)
         self.test5.create()
-        self.after(10000, self.test4.edit, 0)
-        self.after(10000, self.test5.edit, 0)
+        # self.after(10000, self.test4.edit, 0)
+        # self.after(10000, self.test5.edit, 0)
+
+
 
 
         self.c.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=CENTER)

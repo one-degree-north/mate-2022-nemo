@@ -75,11 +75,13 @@ class Controls:
         #TESTING higher microseconds
         #speed *= 1.15
 
+        speed = speed / 50 * 100 + 100
         speed = int(speed)
-        """if (speed > 200):
+
+        if speed > 200:
             speed = 200
-        if (speed < 0):
-            speed = 0"""
+        elif speed < 0:
+            speed = 0
 
         self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])

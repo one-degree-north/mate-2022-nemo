@@ -11,16 +11,18 @@ import multiprocessing as mp
 from math import cos, sin, radians
 
 
+
+
 @dataclass
 class Thrusters:
-    front_left = 1
-    front_right = 0
+    front_left = 4
+    front_right = 6
 
-    mid_left = 2
-    mid_right = 5
+    mid_left = 0
+    mid_right = 3
 
-    back_left = 4
-    back_right = 3
+    back_left = 2
+    back_right = 1
 
 class Keyhoard():
     def __init__(self):
