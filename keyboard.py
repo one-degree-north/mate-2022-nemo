@@ -122,51 +122,38 @@ class Keyhoard():
             try:
                 ksms = self.speed_modifiers[pressed_key] # key speed modifier set
             except KeyError:
+
+                def determine_angle(pressed_key, current_angle, key_set, modify_amount, angle_range):
+                    """
+                    key_set in format [main, incrementer, decrementer]
+                    angle_range in format [larger, smaller]
+                    """
+
+                    if pressed_key == key_set[0]:
+                        to_max = angle_range[1] - current_angle
+                        to_min = current_angle - angle_range[0]
+                        if to_min < to_max:
+                            return angle_range[1]
+                        else:
+                            return angle_range[0]
+                    elif pressed_key == key_set[1]:
+                        current_angle += modify_amount
+                    else: # pressed_key == key_set[2]
+                        current_angle -= modify_amount
+
+                    if current_angle > angle_range[1]:
+                        current_angle = angle_range[1]
+                    elif current_angle < angle_range[0]:
+                        current_angle = angle_range[0]
+
+                    return current_angle
+
                 if pressed_key in self.clamp_action_keys:
-                    if pressed_key == "e":
-                        to_max = self.clamp_min_max_angle[1] - self.clamp_angle
-                        to_min = self.clamp_angle - self.clamp_min_max_angle[0]
-                        if to_min < to_max:
-                            self.clamp_angle = self.clamp_min_max_angle[1]
-                        else:
-                            self.clamp_angle = self.clamp_min_max_angle[0]
-                    elif pressed_key == "r":
-                        self.clamp_angle += 15
-                        self.clamp_angle = self.clamp_min_max_angle[1] if self.clamp_angle > self.clamp_min_max_angle[1] else self.clamp_angle
-                    elif pressed_key == "f":
-                        self.clamp_angle -= 15
-                        self.clamp_angle = self.clamp_min_max_angle[0] if self.clamp_angle < self.clamp_min_max_angle[0] else self.clamp_angle
-
+                    self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 15, (0, 90))
                 elif pressed_key in self.camera_action_keys:
-                    if pressed_key == "c":
-                        to_max = self.camera_min_max_angle[1] - self.camera_angle
-                        to_min = self.camera_angle - self.camera_min_max_angle[0]
-                        if to_min < to_max:
-                            self.camera_angle = self.camera_min_max_angle[1]
-                        else:
-                            self.camera_angle = self.camera_min_max_angle[0]
-                    elif pressed_key == "g":
-                        self.camera_angle += 15
-                        self.camera_angle = self.camera_min_max_angle[1] if self.camera_angle > self.camera_min_max_angle[1] else self.camera_angle
-                    elif pressed_key == "v":
-                        self.camera_angle -= 15
-                        self.camera_angle = self.camera_min_max_angle[0] if self.camera_angle < self.camera_min_max_angle[0] else self.camera_angle
-            
+                    self.camera_angle = determine_angle(pressed_key, self.camera_angle, self.camera_action_keys, 15, (0, 90))
                 elif pressed_key in self.clamp_rotate_action_keys:
-                    if pressed_key == "t":
-                        to_max = self.clamp_rotate_min_max_angle[1] - self.clamp_rotate_angle
-                        to_min = self.clamp_rotate_angle - self.clamp_rotate_min_max_angle[0]
-                        if to_min < to_max:
-                            self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[1]
-                        else:
-                            self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[0]
-                    elif pressed_key == "y":
-                        self.clamp_rotate_angle += 15
-                        self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[1] if self.clamp_rotate_angle > self.clamp_rotate_min_max_angle[1] else self.clamp_rotate_angle
-                    elif pressed_key == "h":
-                        self.clamp_rotate_angle -= 15
-                        self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[0] if self.clamp_rotate_angle < self.clamp_rotate_min_max_angle[0] else self.clamp_rotate_angle
-
+                    self.clamp_rotate_angle = determine_angle(pressed_key, self.clamp_rotate_angle, self.clamp_rotate_action_keys, 15, (0, 90))
             
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
                 horiz_divisor += 1
@@ -241,8 +228,6 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     # controls.setClawDeg(Servos.claw, ts[7])
     # controls.setClawDeg(Servos.claw_rotate, ts[8])
 
-    ######### ADJUSTING THE GUI ##########
-    pass
 
 
     
@@ -256,7 +241,7 @@ k.start()
 
 def create_view(pipe):
     root = Tk()
-    root.title("XBox Viewer")
+    root.title("Nemo Swim")
     root.geometry("500x500")
 
 
