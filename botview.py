@@ -278,14 +278,14 @@ class XboxViewer(Frame):
         self.test3 = self.Joystick(self, self.c, 1, (0.5, 0.5), (60, 100), (0, 0))
         self.test3.create()
 
-        self.test7 = self.Trigger(self, self.c, 2, (0.8, 0.5), (10, 50), 0.5)
+        self.test7 = self.Trigger(self, self.c, 2, (0.8, 0.5), (10, 50), 0)
         self.test7.create()
 
-        self.test4 = self.SpiritLevel(self, self.c, 5, (0.5, 0.10), (50, 10), 0)
-        self.test4.create()
+        # self.test4 = self.SpiritLevel(self, self.c, 5, (0.5, 0.10), (50, 10), 0)
+        # self.test4.create()
 
-        self.test8 = self.TiltMeter(self, self.c, 6, (0.9, 0.9), 90, 1)
-        self.test8.create()
+        # self.test8 = self.TiltMeter(self, self.c, 6, (0.9, 0.9), 90, 1)
+        # self.test8.create()
         
 
         # self.after(10000, self.test4.edit, 0)

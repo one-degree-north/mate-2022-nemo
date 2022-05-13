@@ -24,6 +24,13 @@ class Thrusters:
     back_left = 2
     back_right = 1
 
+@dataclass
+class Servos:
+    claw = 0
+    claw_rotate = 1
+    camera = 2
+
+
 class Keyhoard():
     def __init__(self):
         self.key_states = {
@@ -47,6 +54,10 @@ class Keyhoard():
             "c": False,
             "g": False,
             "v": False,
+
+            "t": False,
+            "y": False,
+            "h": False,
         }
 
         self.speed_modifiers = {
@@ -69,10 +80,15 @@ class Keyhoard():
         self.tilt_action_keys = ["u", "o"]
         self.rotate_action_keys = ["j", "l"]
         self.clamp_action_keys = ["e", "r", "f"]
+        self.clamp_rotate_action_keys = ["t", "y", "h"]
         self.camera_action_keys = ["c", "g", "v"]
 
         self.clamp_angle = 0
         self.clamp_min_max_angle = [0, 90]
+
+        self.clamp_rotate_angle = 0
+        self.clamp_rotate_min_max_angle = [0, 90]
+
 
         self.claw_is_clamped = False
 
@@ -136,6 +152,21 @@ class Keyhoard():
                         self.camera_angle -= 15
                         self.camera_angle = self.camera_min_max_angle[0] if self.camera_angle < self.camera_min_max_angle[0] else self.camera_angle
             
+                elif pressed_key in self.clamp_rotate_action_keys:
+                    if pressed_key == "t":
+                        to_max = self.clamp_rotate_min_max_angle[1] - self.clamp_rotate_angle
+                        to_min = self.clamp_rotate_angle - self.clamp_rotate_min_max_angle[0]
+                        if to_min < to_max:
+                            self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[1]
+                        else:
+                            self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[0]
+                    elif pressed_key == "y":
+                        self.clamp_rotate_angle += 15
+                        self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[1] if self.clamp_rotate_angle > self.clamp_rotate_min_max_angle[1] else self.clamp_rotate_angle
+                    elif pressed_key == "h":
+                        self.clamp_rotate_angle -= 15
+                        self.clamp_rotate_angle = self.clamp_rotate_min_max_angle[0] if self.clamp_rotate_angle < self.clamp_rotate_min_max_angle[0] else self.clamp_rotate_angle
+
             
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
                 horiz_divisor += 1
@@ -172,6 +203,7 @@ class Keyhoard():
 
             self.clamp_angle,
             self.camera_angle,
+            self.clamp_rotate_angle,
         ]
 
     def change_key_state(self, key, new_state):
@@ -194,15 +226,20 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     print(f"back left\t: {ts[4]}")
     print(f"back right\t: {ts[5]}")
     print(f"clamp angle\t: {ts[6]}")
+    print(f"camera r angle\t: {ts[8]}")
     print(f"camera angle\t: {ts[7]}")
 
     ######### CALL THE CONTROLS HERE ###########
-    controls.thrusterOn(Thrusters.front_left, ts[0])
-    controls.thrusterOn(Thrusters.front_right, ts[1])
-    controls.thrusterOn(Thrusters.mid_left, ts[2])
-    controls.thrusterOn(Thrusters.mid_right, ts[3])
-    controls.thrusterOn(Thrusters.back_left, ts[4])
-    controls.thrusterOn(Thrusters.back_right, ts[5])
+    # controls.thrusterOn(Thrusters.front_left, ts[0])
+    # controls.thrusterOn(Thrusters.front_right, ts[1])
+    # controls.thrusterOn(Thrusters.mid_left, ts[2])
+    # controls.thrusterOn(Thrusters.mid_right, ts[3])
+    # controls.thrusterOn(Thrusters.back_left, ts[4])
+    # controls.thrusterOn(Thrusters.back_right, ts[5])
+    
+    # controls.setClawDeg(Servos.camera, ts[6])
+    # controls.setClawDeg(Servos.claw, ts[7])
+    # controls.setClawDeg(Servos.claw_rotate, ts[8])
 
     ######### ADJUSTING THE GUI ##########
     pass
@@ -213,8 +250,8 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
-controls = Controls()
-controls.startThread()
+# controls = Controls()
+# controls.startThread()
 
 
 def create_view(pipe):
@@ -267,11 +304,11 @@ def create_view(pipe):
             net_y = round(front_left_y + front_right_y + back_left_y + back_right_y, 1)
             net_x = front_left_x + front_right_x + back_left_x + back_right_x
 
-            print(f"{net_torque_z = }")
-            print(f"{net_torque_y = }")
-            print(f"{net_z = }")
-            print(f"{net_y = }")
-            print(f"{net_x = }")
+            # print(f"{net_torque_z = }")
+            # print(f"{net_torque_y = }")
+            # print(f"{net_z = }")
+            # print(f"{net_y = }")
+            # print(f"{net_x = }")
 
             # print(f"{front_left_y = }")
             # print(f"{front_right_y = }")
@@ -281,7 +318,7 @@ def create_view(pipe):
             # print(f"{front_right_x = }")
             # print(f"{back_left_x = }")
             # print(f"{back_right_x = }")
-            print()
+            # print()
 
 
             viewer.test3.edit((net_x / 150, net_y / 150))
