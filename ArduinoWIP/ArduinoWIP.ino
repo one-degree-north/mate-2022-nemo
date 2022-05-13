@@ -103,10 +103,46 @@ void loop(){
 
 
 //READING INPUTS AND EXECUTING COMMANDS
-
+int inputNum = 0;
+char input;
+int thrusterPin;
+int thrusterValue;
 void readInputsDebug2(){
   if (Serial.available()){
-    char input = Serial.read();
+    input = Serial.read();
+    Serial.print("input: ");
+    Serial.print(input);
+    Serial.print("\n");
+    if (inputNum == 0){
+      thrusterPin = input;
+      Serial.print(thrusterPin);
+      thrusterPin -= 48;
+      Serial.print("thrusterPin: ");
+      Serial.print(thrusterPin);
+      Serial.print("\n");
+    }
+    else if (input >= 48 && input <= 47){
+      //Serial.print(input);
+      thrusterValue *= 10;
+      thrusterValue += (input - 48);
+    }
+    if (input == 'o'){
+      inputNum++;
+    }
+    Serial.print("\n");
+    Serial.print(inputNum);
+    Serial.print(" ");
+    Serial.print(thrusterPin);
+    Serial.print(" ");
+    Serial.print(thrusterValue);
+    if (inputNum >= 2){
+      moveThruster((int)thrusterPin, (int)thrusterValue);
+      Serial.print("move thruster");
+      inputNum = 0;
+      thrusterValue = 0;
+    }
+  }
+    /*
     if (input == '0'){
       setAutoReport(0x1E, 1000);
     }
@@ -139,7 +175,7 @@ void readInputsDebug2(){
       moveThruster(0, 170);
     }
     Serial.println("---");
-  }
+  }*/
 }
 
 

@@ -66,20 +66,20 @@ class Controls:
 
     def thrusterOn(self, motor, speed):
         #Testing, having the input between -50 and 50 instead
-        if motor not in self.flip:
+        """if motor not in self.flip:
             speed *= -1 # MAJOR SPEED FLIP THING
         if motor in self.reversed:
             speed *= -1
             
-        speed += 150
+        speed += 150"""
         #TESTING higher microseconds
         #speed *= 1.15
 
         speed = int(speed)
-        if (speed > 200):
+        """if (speed > 200):
             speed = 200
         if (speed < 0):
-            speed = 0
+            speed = 0"""
 
         self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])
