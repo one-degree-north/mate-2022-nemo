@@ -75,7 +75,7 @@ class Controls:
         #TESTING higher microseconds
         #speed *= 1.15
 
-        flip = [0, 1]
+        flip = [0, 1, 4]
         if motor in flip:
             speed = -speed
 

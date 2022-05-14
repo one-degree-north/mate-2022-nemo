@@ -17,18 +17,18 @@ from math import cos, sin, radians
 
 @dataclass
 class Thrusters:
-    front_left = 0 
-    front_right = 1
+    front_left = 4 
+    front_right = 3
 
-    mid_left = 2 
-    mid_right = 5
+    mid_left = 1
+    mid_right = 0 
 
-    back_left = 4
-    back_right = 3
+    back_left = 5
+    back_right = 2
 
 @dataclass
 class Servos:
-    claw = 0
+    claw = 2
     claw_rotate = 1
     camera = 2
 
