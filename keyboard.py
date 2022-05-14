@@ -21,7 +21,7 @@ class Thrusters:
     front_right = 3
 
     mid_left = 1
-    mid_right = 0 
+    mid_right = 0
 
     back_left = 5
     back_right = 2
@@ -29,8 +29,9 @@ class Thrusters:
 @dataclass
 class Servos:
     claw = 2
-    claw_rotate = 1
-    camera = 2
+    # Not in use
+    # claw_rotate = 1
+    # camera = 2
 
 
 class Keyhoard():
@@ -53,13 +54,14 @@ class Keyhoard():
             "r": False,
             "f": False,
 
-            "c": False,
-            "g": False,
-            "v": False,
+            # Not in use
+            # "c": False,
+            # "g": False,
+            # "v": False,
 
-            "t": False,
-            "y": False,
-            "h": False,
+            # "t": False,
+            # "y": False,
+            # "h": False,
 
             "q": False,
         }
