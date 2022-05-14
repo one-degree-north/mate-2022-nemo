@@ -80,7 +80,7 @@ class Controls:
             speed = -speed
 
 
-        print("This")
+
         speed = speed + 150
         speed = int(speed)
 
@@ -89,7 +89,7 @@ class Controls:
         elif speed < 100:
             speed = 100
 
-        print(f"WRITING THIS {speed = }")
+
 
         self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])
