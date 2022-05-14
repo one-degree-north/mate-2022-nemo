@@ -75,7 +75,7 @@ class Controls:
         #TESTING higher microseconds
         #speed *= 1.15
 
-        speed = speed / 50 * 100 + 100
+        speed = speed + 150
         speed = int(speed)
 
         if speed > 200:
