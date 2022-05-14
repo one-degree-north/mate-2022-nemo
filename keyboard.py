@@ -247,14 +247,14 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     # print(f"camera angle\t: {ts[7]}")
 
     ######### CALL THE CONTROLS HERE ###########
-    # controls.thrusterOn(Thrusters.front_left, ts[0])
-    # controls.thrusterOn(Thrusters.front_right, ts[1])
-    # controls.thrusterOn(Thrusters.mid_left, ts[2])
-    # controls.thrusterOn(Thrusters.mid_right, ts[3])
-    # controls.thrusterOn(Thrusters.back_left, ts[4])
-    # controls.thrusterOn(Thrusters.back_right, ts[5])
+    controls.thrusterOn(Thrusters.front_left, ts[0])
+    controls.thrusterOn(Thrusters.front_right, ts[1])
+    controls.thrusterOn(Thrusters.mid_left, ts[2])
+    controls.thrusterOn(Thrusters.mid_right, ts[3])
+    controls.thrusterOn(Thrusters.back_left, ts[4])
+    controls.thrusterOn(Thrusters.back_right, ts[5])
     
-    # controls.setClawDeg(Servos.camera, ts[6])
+    controls.setClawDeg(Servos.claw, ts[6])
     # controls.setClawDeg(Servos.claw, ts[7])
     # controls.setClawDeg(Servos.claw_rotate, ts[8])
 
@@ -265,9 +265,9 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
-# controls = Controls()
-# controls.startThread()
-controls = 0
+controls = Controls()
+controls.startThread()
+# controls = 0
 
 
 def create_view(pipe):
