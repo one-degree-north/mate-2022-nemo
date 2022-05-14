@@ -3,7 +3,7 @@ import numpy as np
 
 def main(source):
     cap = cv2.VideoCapture(source)
-    if cap.isOpened()== False: 
+    if cap.isOpened() == False: 
         print("Error opening video stream or file")
 
 
