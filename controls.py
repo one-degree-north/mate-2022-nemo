@@ -75,6 +75,7 @@ class Controls:
         #TESTING higher microseconds
         #speed *= 1.15
 
+        print("This")
         speed = speed + 150
         speed = int(speed)
 
