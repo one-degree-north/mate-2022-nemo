@@ -3,6 +3,8 @@
 from tkinter import *
 from pynput import keyboard
 from dataclasses import dataclass
+
+from regex import P
 from controls import Controls
 from botview import XboxViewer
 import multiprocessing as mp
@@ -58,6 +60,8 @@ class Keyhoard():
             "t": False,
             "y": False,
             "h": False,
+
+            "q": False,
         }
 
         self.speed_modifiers = {
@@ -80,8 +84,9 @@ class Keyhoard():
         self.tilt_action_keys = ["u", "o"]
         self.rotate_action_keys = ["j", "l"]
         self.clamp_action_keys = ["e", "r", "f"]
-        self.clamp_rotate_action_keys = ["t", "y", "h"]
-        self.camera_action_keys = ["c", "g", "v"]
+        self.thrust_cutter_key = ["q"]
+        # self.clamp_rotate_action_keys = ["t", "y", "h"]
+        # self.camera_action_keys = ["c", "g", "v"]
 
         self.clamp_angle = 0
         self.clamp_min_max_angle = [0, 90]
@@ -89,6 +94,8 @@ class Keyhoard():
         self.clamp_rotate_angle = 0
         self.clamp_rotate_min_max_angle = [0, 90]
 
+        self.cut_thrust = False
+        self.cut_amount = 0.5
 
         self.claw_is_clamped = False
 
@@ -121,6 +128,9 @@ class Keyhoard():
         for pressed_key in self.pressed_keys():
             try:
                 ksms = self.speed_modifiers[pressed_key] # key speed modifier set
+                # if self.cut_thrust:
+                #     for modifier in ksms:
+                #         modifier /= 2
             except KeyError:
 
                 def determine_angle(pressed_key, current_angle, key_set, modify_amount, angle_range):
@@ -150,10 +160,15 @@ class Keyhoard():
 
                 if pressed_key in self.clamp_action_keys:
                     self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 15, (0, 90))
-                elif pressed_key in self.camera_action_keys:
-                    self.camera_angle = determine_angle(pressed_key, self.camera_angle, self.camera_action_keys, 15, (0, 90))
-                elif pressed_key in self.clamp_rotate_action_keys:
-                    self.clamp_rotate_angle = determine_angle(pressed_key, self.clamp_rotate_angle, self.clamp_rotate_action_keys, 15, (0, 90))
+                elif pressed_key in self.thrust_cutter_key:
+                    if self.cut_thrust == False:
+                        self.cut_thrust = True
+                    else:
+                        self.cut_thrust = False
+                # elif pressed_key in self.camera_action_keys:
+                #     self.camera_angle = determine_angle(pressed_key, self.camera_angle, self.camera_action_keys, 15, (0, 90))
+                # elif pressed_key in self.clamp_rotate_action_keys:
+                #     self.clamp_rotate_angle = determine_angle(pressed_key, self.clamp_rotate_angle, self.clamp_rotate_action_keys, 15, (0, 90))
             
             if pressed_key in self.move_action_keys or pressed_key in self.rotate_action_keys:
                 horiz_divisor += 1
@@ -179,6 +194,20 @@ class Keyhoard():
 
         mid_left_speed = mid_left_speed / vert_divisor
         mid_right_speed = mid_right_speed / vert_divisor
+        
+        if self.cut_thrust:
+            return [
+                front_left_speed * self.cut_amount,
+                front_right_speed* self.cut_amount,
+                mid_left_speed* self.cut_amount,
+                mid_right_speed* self.cut_amount,
+                back_left_speed* self.cut_amount,
+                back_right_speed* self.cut_amount,
+
+                self.clamp_angle,
+                self.camera_angle,
+                self.clamp_rotate_angle,
+            ]
 
         return [
             front_left_speed,
@@ -206,6 +235,7 @@ class Keyhoard():
 
 def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
+    # print(f"{self.cut_thrust = }")
     print(f"\nfront left\t: {ts[0]}")
     print(f"front right\t: {ts[1]}")
     print(f"mid left\t: {ts[2]}")
@@ -213,16 +243,16 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     print(f"back left\t: {ts[4]}")
     print(f"back right\t: {ts[5]}")
     print(f"clamp angle\t: {ts[6]}")
-    print(f"camera r angle\t: {ts[8]}")
-    print(f"camera angle\t: {ts[7]}")
+    # print(f"camera r angle\t: {ts[8]}")
+    # print(f"camera angle\t: {ts[7]}")
 
     ######### CALL THE CONTROLS HERE ###########
-    controls.thrusterOn(Thrusters.front_left, ts[0])
-    controls.thrusterOn(Thrusters.front_right, ts[1])
-    controls.thrusterOn(Thrusters.mid_left, ts[2])
-    controls.thrusterOn(Thrusters.mid_right, ts[3])
-    controls.thrusterOn(Thrusters.back_left, ts[4])
-    controls.thrusterOn(Thrusters.back_right, ts[5])
+    # controls.thrusterOn(Thrusters.front_left, ts[0])
+    # controls.thrusterOn(Thrusters.front_right, ts[1])
+    # controls.thrusterOn(Thrusters.mid_left, ts[2])
+    # controls.thrusterOn(Thrusters.mid_right, ts[3])
+    # controls.thrusterOn(Thrusters.back_left, ts[4])
+    # controls.thrusterOn(Thrusters.back_right, ts[5])
     
     # controls.setClawDeg(Servos.camera, ts[6])
     # controls.setClawDeg(Servos.claw, ts[7])
@@ -235,8 +265,9 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
-controls = Controls()
-controls.startThread()
+# controls = Controls()
+# controls.startThread()
+controls = 0
 
 
 def create_view(pipe):
