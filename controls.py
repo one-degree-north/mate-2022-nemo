@@ -80,8 +80,8 @@ class Controls:
 
         if speed > 200:
             speed = 200
-        elif speed < 0:
-            speed = 0
+        elif speed < 100:
+            speed = 100
 
         print(f"WRITING THIS {speed = }")
 
