@@ -83,6 +83,8 @@ class Controls:
         elif speed < 0:
             speed = 0
 
+        print(f"WRITING THIS {speed = }")
+
         self.outputQueue.put((0x20, [motor, speed]))
         #self.comms.write(0x20, [motor, speed])
 
