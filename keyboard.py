@@ -4,7 +4,7 @@ from tkinter import *
 from pynput import keyboard
 from dataclasses import dataclass
 
-from regex import P
+
 from controls import Controls
 from botview import XboxViewer
 import multiprocessing as mp
