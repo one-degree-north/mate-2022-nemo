@@ -360,16 +360,15 @@ def main(pipe):
 
 
 if __name__ == "__main__":
-    # pipe.put("Hello")
     pipe = mp.Queue()
+    if input("Open GUI(y/n): ").lower() == "y":
+        gui_thread = mp.Process(target=create_view, args=(pipe,))
+        keyboard_thread = mp.Process(target=main, args=(pipe,))
 
-
-    gui_thread = mp.Process(target=create_view, args=(pipe,))
-    keyboard_thread = mp.Process(target=main, args=(pipe,))
-
-
-    gui_thread.start()
-    keyboard_thread.start()
-    
-    keyboard_thread.join()
-    gui_thread.join()
+        gui_thread.start()
+        keyboard_thread.start()
+        
+        keyboard_thread.join()
+        gui_thread.join()
+    else:
+        main(pipe)

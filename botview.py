@@ -33,7 +33,7 @@ class XboxViewer(Frame):
 
         def edit(self, val):
             if self.activation != val:
-                print("changing")
+                # print("changing")
                 self.activation = val
                 self.canvas.itemconfig(self.canvas_id, fill=self.dip_paintbrush())
 
@@ -195,7 +195,7 @@ class XboxViewer(Frame):
 
         def edit(self, val):
             if self.activation != val:
-                print("changing")
+                # print("changing")
                 self.activation = val
                 self.canvas.itemconfig(self.canvas_id, extent=-(self.activation*180))
 
