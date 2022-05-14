@@ -15,14 +15,14 @@ from math import cos, sin, radians
 
 @dataclass
 class Thrusters:
-    front_left = 4
-    front_right = 6
+    front_left = 0
+    front_right = 1
 
-    mid_left = 0
+    mid_left = 2
     mid_right = 3
 
-    back_left = 2
-    back_right = 1
+    back_left = 4
+    back_right = 5
 
 @dataclass
 class Servos:
@@ -224,9 +224,9 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     controls.thrusterOn(Thrusters.back_left, ts[4])
     controls.thrusterOn(Thrusters.back_right, ts[5])
     
-    controls.setClawDeg(Servos.camera, ts[6])
-    controls.setClawDeg(Servos.claw, ts[7])
-    controls.setClawDeg(Servos.claw_rotate, ts[8])
+    # controls.setClawDeg(Servos.camera, ts[6])
+    # controls.setClawDeg(Servos.claw, ts[7])
+    # controls.setClawDeg(Servos.claw_rotate, ts[8])
 
 
 
@@ -329,7 +329,7 @@ def main(pipe):
                 k.change_key_state(char, True)
                 ts = k.thruster_speeds()
                 show_thruster_speeds(ts=ts, controls=None)
-                pipe.put(ts)
+                # pipe.put(ts)
 
 
         except AttributeError:
@@ -345,7 +345,7 @@ def main(pipe):
                 k.change_key_state(char, False)
                 ts = k.thruster_speeds()
                 show_thruster_speeds(ts=ts, controls=None)
-                pipe.put(ts)
+                # pipe.put(ts)
 
 
         except AttributeError:
@@ -361,14 +361,14 @@ def main(pipe):
 
 if __name__ == "__main__":
     pipe = mp.Queue()
-    if input("Open GUI(y/n): ").lower() == "y":
-        gui_thread = mp.Process(target=create_view, args=(pipe,))
-        keyboard_thread = mp.Process(target=main, args=(pipe,))
+    # if input("Open GUI(y/n): ").lower() == "y":
+        # gui_thread = mp.Process(target=create_view, args=(pipe,))
+        # keyboard_thread = mp.Process(target=main, args=(pipe,))
 
-        gui_thread.start()
-        keyboard_thread.start()
+        # gui_thread.start()
+        # keyboard_thread.start()
         
-        keyboard_thread.join()
-        gui_thread.join()
-    else:
-        main(pipe)
+        # keyboard_thread.join()
+        # gui_thread.join()
+    # else:
+    main(pipe)
