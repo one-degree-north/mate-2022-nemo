@@ -328,7 +328,7 @@ def main(pipe):
             if not k.is_down(char):
                 k.change_key_state(char, True)
                 ts = k.thruster_speeds()
-                show_thruster_speeds(ts=ts, controls=None)
+                show_thruster_speeds(ts=ts, controls=controls)
                 # pipe.put(ts)
 
 
@@ -344,7 +344,7 @@ def main(pipe):
             if k.is_down(char):
                 k.change_key_state(char, False)
                 ts = k.thruster_speeds()
-                show_thruster_speeds(ts=ts, controls=None)
+                show_thruster_speeds(ts=ts, controls=controls)
                 # pipe.put(ts)
 
 
