@@ -75,6 +75,11 @@ class Controls:
         #TESTING higher microseconds
         #speed *= 1.15
 
+        flip = [0, 1]
+        if motor in flip:
+            speed = -speed
+
+
         print("This")
         speed = speed + 150
         speed = int(speed)

@@ -15,14 +15,14 @@ from math import cos, sin, radians
 
 @dataclass
 class Thrusters:
-    front_left = 0
+    front_left = 0 
     front_right = 1
 
-    mid_left = 2
-    mid_right = 3
+    mid_left = 2 
+    mid_right = 5
 
     back_left = 4
-    back_right = 5
+    back_right = 3
 
 @dataclass
 class Servos:
