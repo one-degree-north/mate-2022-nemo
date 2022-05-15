@@ -1,4 +1,4 @@
-//#define Serial Serial1
+#define Serial Serial1
 
 #include <Wire.h>
 #include <SPI.h>
@@ -76,10 +76,10 @@ void setup(){
   }
 
   for (int i = 0; i < 3; i++){
-    clawServos[i].attach(clawPins[i]);
+    clawServos[i].attach(clawPins[i], 1200, 1800);
   }
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(10);
 
   strip.begin(); // Initialize pins for output
@@ -108,7 +108,7 @@ char input;
 int thrusterPin;
 int thrusterValue;
 void readInputsDebug2(){
-  if (Serial.available()){
+  /*if (Serial.available()){
     input = Serial.read();
     Serial.print("input: ");
     Serial.print(input);
@@ -140,6 +140,17 @@ void readInputsDebug2(){
       Serial.print("move thruster");
       inputNum = 0;
       thrusterValue = 0;
+    }*/
+    if (Serial.available() >= 2){
+      byte thrusterPin = Serial.read();
+      thrusterPin -= '0';
+      byte thrusterValue = Serial.read();
+      thrusterValue -= '0';
+      Serial.print("thrusterPin: ");
+      Serial.println(thrusterPin);
+      Serial.print("thrusterValue: ");
+      Serial.println(thrusterValue);
+      moveThruster((int)thrusterPin, (int)thrusterValue);
     }
   }
     /*
@@ -175,8 +186,8 @@ void readInputsDebug2(){
       moveThruster(0, 170);
     }
     Serial.println("---");
-  }*/
-}
+  }
+}*/
 
 
 void readInputs2(){
