@@ -12,7 +12,7 @@ while True:
     if not ret:
         print("failed to grab frame")
         break
-    cv2.imshow("Camera", cv2.resize(frame, (1152, 648)))
+    cv2.imshow("Camera", cv2.resize(frame, (640, 360)))
 
     k = cv2.waitKey(1)
     if k%256 == 27:
