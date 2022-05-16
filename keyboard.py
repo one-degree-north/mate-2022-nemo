@@ -63,7 +63,7 @@ class Keyhoard():
             # "y": False,
             # "h": False,
 
-            # "q": False,
+            "q": False,
             "1": False,
             "2": False,
             "3": False,
@@ -139,7 +139,22 @@ class Keyhoard():
         horiz_divisor = 0
         vert_divisor = 0
 
+        if "q" in self.pressed_keys():
+            return [
+                front_left_speed,
+                front_right_speed,
+                mid_left_speed,
+                mid_right_speed,
+                back_left_speed,
+                back_right_speed,
+
+                self.clamp_angle,
+                self.camera_angle,
+                self.clamp_rotate_angle,
+            ]
+        
         for pressed_key in self.pressed_keys():
+            
             try:
                 ksms = self.speed_modifiers[pressed_key] # key speed modifier set
                 # if self.cut_thrust:
@@ -246,21 +261,21 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     # print(f"camera angle\t: {ts[7]}")
 
     ######### CALL THE CONTROLS HERE ###########
-    controls.thrusterOn(Thrusters.front_left, ts[0])
-    sleep(0.01)
-    controls.thrusterOn(Thrusters.front_right, ts[1])
-    sleep(0.01)
-    controls.thrusterOn(Thrusters.mid_left, ts[2])
-    sleep(0.01)
-    controls.thrusterOn(Thrusters.mid_right, ts[3])
-    sleep(0.01)
-    controls.thrusterOn(Thrusters.back_left, ts[4])
-    sleep(0.01)
-    controls.thrusterOn(Thrusters.back_right, ts[5])
-    sleep(0.01)
+    # controls.thrusterOn(Thrusters.front_left, ts[0])
+    # sleep(0.01)
+    # controls.thrusterOn(Thrusters.front_right, ts[1])
+    # sleep(0.01)
+    # controls.thrusterOn(Thrusters.mid_left, ts[2])
+    # sleep(0.01)
+    # controls.thrusterOn(Thrusters.mid_right, ts[3])
+    # sleep(0.01)
+    # controls.thrusterOn(Thrusters.back_left, ts[4])
+    # sleep(0.01)
+    # controls.thrusterOn(Thrusters.back_right, ts[5])
+    # sleep(0.01)
     
-    controls.setClawDeg(Servos.claw, ts[6])
-    sleep(0.01)
+    # controls.setClawDeg(Servos.claw, ts[6])
+    # sleep(0.01)
 
 
     # controls.setClawDeg(Servos.claw, ts[7])
@@ -273,9 +288,9 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
-controls = Controls()
-controls.startThread()
-# controls = 0
+# controls = Controls()
+# controls.startThread()
+controls = 0
 
 
 def create_view(pipe):
