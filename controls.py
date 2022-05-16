@@ -76,7 +76,7 @@ class Controls:
         #speed *= 1.15
 
         # flip = [0, 1, 4]
-        flip = [4]
+        flip = [3]
         if motor in flip:
             speed = -speed
 
