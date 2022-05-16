@@ -94,6 +94,7 @@ class Controls:
 
 
         self.outputQueue.put((0x20, [motor, speed]))
+        print("And so is this")
         #self.comms.write(0x20, [motor, speed])
 
     def thrusterOff(self, motor):
