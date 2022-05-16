@@ -6,7 +6,7 @@ class Comms:
     def __init__(self, outputQueue=None, controls=None):
         port_no = int(input("port no: "))
         #self.arduinoSerial = Serial(port=f"/dev/ttyUSB{port_no}", baudrate=9600)
-        self.arduinoSerial = Serial(port=f"/dev/ttyUSB{port_no}", baudrate=115200)
+        self.arduinoSerial = Serial(port=f"/dev/cu.usbserial-1420", baudrate=115200)
         # "/dev/ttyS0"
         #"/dev/cu.usbmodem14201"
         #eh make these static
