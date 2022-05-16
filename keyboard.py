@@ -93,8 +93,8 @@ class Keyhoard():
         self.rotate_action_keys = ["j", "l"]
         self.clamp_action_keys = ["e", "r", "f"]
         self.thrust_cutter_keys = {
-            "1": 0.1,
-            "2": 0.2,
+            "1": 0.2,
+            "2": 0.4,
             "3": 0.6,
             "4": 0.8, 
             "5": 1.0
