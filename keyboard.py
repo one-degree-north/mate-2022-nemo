@@ -90,7 +90,7 @@ class Keyhoard():
         # self.clamp_rotate_action_keys = ["t", "y", "h"]
         # self.camera_action_keys = ["c", "g", "v"]
 
-        self.clamp_angle = 0
+        self.clamp_angle = 76
         self.clamp_min_max_angle = [0, 90]
 
         self.clamp_rotate_angle = 0
