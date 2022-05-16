@@ -1,4 +1,4 @@
-
+from time import sleep
 # from queue import Queue
 from tkinter import *
 from pynput import keyboard
@@ -250,13 +250,20 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
     ######### CALL THE CONTROLS HERE ###########
     controls.thrusterOn(Thrusters.front_left, ts[0])
+    sleep(0.01)
     controls.thrusterOn(Thrusters.front_right, ts[1])
+    sleep(0.01)
     controls.thrusterOn(Thrusters.mid_left, ts[2])
+    sleep(0.01)
     controls.thrusterOn(Thrusters.mid_right, ts[3])
+    sleep(0.01)
     controls.thrusterOn(Thrusters.back_left, ts[4])
+    sleep(0.01)
     controls.thrusterOn(Thrusters.back_right, ts[5])
+    sleep(0.01)
     
     controls.setClawDeg(Servos.claw, ts[6])
+    sleep(0.01)
 
 
     # controls.setClawDeg(Servos.claw, ts[7])
