@@ -96,8 +96,8 @@ class Keyhoard():
             "1": 0.1,
             "2": 0.3,
             "3": 0.5,
-            "4": 0.8, 
-            "5": 1.0
+            # "4": 0.8, 
+            # "5": 1.0
         }
         # self.clamp_rotate_action_keys = ["t", "y", "h"]
         # self.camera_action_keys = ["c", "g", "v"]
@@ -109,7 +109,13 @@ class Keyhoard():
         self.clamp_rotate_min_max_angle = [0, 90]
 
         self.cut_thrust = False
-        self.cut_amount = 1
+
+        self.cut_amount = 0
+        for thrust_amount in self.thrust_cutter_keys.values():
+            if self.cut_amount < thrust_amount:
+                self.cut_amount = thrust_amount
+
+        print(f"{self.cut_amount = }")
 
         self.claw_is_clamped = False
 
