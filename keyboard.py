@@ -161,7 +161,7 @@ class Keyhoard():
                     return current_angle
 
                 if pressed_key in self.clamp_action_keys:
-                    self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 15, (0, 90))
+                    self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 5, (76, 110))
                 elif pressed_key in self.thrust_cutter_key:
                     if self.cut_thrust == False:
                         self.cut_thrust = True
@@ -257,6 +257,8 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     controls.thrusterOn(Thrusters.back_right, ts[5])
     
     controls.setClawDeg(Servos.claw, ts[6])
+
+
     # controls.setClawDeg(Servos.claw, ts[7])
     # controls.setClawDeg(Servos.claw_rotate, ts[8])
 
