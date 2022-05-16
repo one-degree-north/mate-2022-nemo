@@ -63,7 +63,13 @@ class Keyhoard():
             # "y": False,
             # "h": False,
 
-            "q": False,
+            # "q": False,
+            "1": False,
+            "2": False,
+            "3": False,
+            "4": False,
+            "5": False,
+
         }
 
         self.speed_modifiers = {
@@ -86,7 +92,13 @@ class Keyhoard():
         self.tilt_action_keys = ["u", "o"]
         self.rotate_action_keys = ["j", "l"]
         self.clamp_action_keys = ["e", "r", "f"]
-        self.thrust_cutter_key = ["q"]
+        self.thrust_cutter_keys = {
+            "1": 0.2,
+            "2": 0.4,
+            "3": 0.6,
+            "4": 0.8, 
+            "5": 1.0
+        }
         # self.clamp_rotate_action_keys = ["t", "y", "h"]
         # self.camera_action_keys = ["c", "g", "v"]
 
@@ -97,7 +109,7 @@ class Keyhoard():
         self.clamp_rotate_min_max_angle = [0, 90]
 
         self.cut_thrust = False
-        self.cut_amount = 0.5
+        self.cut_amount = 1
 
         self.claw_is_clamped = False
 
@@ -162,11 +174,8 @@ class Keyhoard():
 
                 if pressed_key in self.clamp_action_keys:
                     self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 5, (76, 110))
-                elif pressed_key in self.thrust_cutter_key:
-                    if self.cut_thrust == False:
-                        self.cut_thrust = True
-                    else:
-                        self.cut_thrust = False
+                elif pressed_key in self.thrust_cutter_keys.keys():
+                    self.cut_amount = self.thrust_cutter_keys[pressed_key]
                 # elif pressed_key in self.camera_action_keys:
                 #     self.camera_angle = determine_angle(pressed_key, self.camera_angle, self.camera_action_keys, 15, (0, 90))
                 # elif pressed_key in self.clamp_rotate_action_keys:
@@ -197,32 +206,20 @@ class Keyhoard():
         mid_left_speed = mid_left_speed / vert_divisor
         mid_right_speed = mid_right_speed / vert_divisor
         
-        if self.cut_thrust:
-            return [
-                front_left_speed * self.cut_amount,
-                front_right_speed* self.cut_amount,
-                mid_left_speed* self.cut_amount,
-                mid_right_speed* self.cut_amount,
-                back_left_speed* self.cut_amount,
-                back_right_speed* self.cut_amount,
-
-                self.clamp_angle,
-                self.camera_angle,
-                self.clamp_rotate_angle,
-            ]
 
         return [
-            front_left_speed,
-            front_right_speed,
-            mid_left_speed,
-            mid_right_speed,
-            back_left_speed,
-            back_right_speed,
+            front_left_speed * self.cut_amount,
+            front_right_speed* self.cut_amount,
+            mid_left_speed* self.cut_amount,
+            mid_right_speed* self.cut_amount,
+            back_left_speed* self.cut_amount,
+            back_right_speed* self.cut_amount,
 
             self.clamp_angle,
             self.camera_angle,
             self.clamp_rotate_angle,
         ]
+
 
     def change_key_state(self, key, new_state):
         if key in self.key_states:
