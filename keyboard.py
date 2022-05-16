@@ -50,6 +50,8 @@ class Keyhoard():
             "u": False,
             "o": False,
 
+            "m": False,
+
             "e": False,
             "r": False,
             "f": False,
@@ -78,8 +80,8 @@ class Keyhoard():
             "s": [-50, -50, -50, -50], #back
             "d": [50, -50, -50, 50], #right
 
-            "l": [-50, 50, -50, 50], #rotate
-            "j": [50, -50, 50, -50], #rotate
+            "l": [-25, 25, -25, 25], #rotate
+            "j": [25, -25, 25, -25], #rotate
 
             "i": [50, 50], 
             "k": [-50, -50],
@@ -99,6 +101,11 @@ class Keyhoard():
             "4": 0.8, 
             "5": 1.0
         }
+        self.bouyancy_keys = ["m"]
+
+        self.kill_key = "q"
+
+        self.keep_bouyant = False
         # self.clamp_rotate_action_keys = ["t", "y", "h"]
         # self.camera_action_keys = ["c", "g", "v"]
 
@@ -145,7 +152,7 @@ class Keyhoard():
         horiz_divisor = 0
         vert_divisor = 0
 
-        if "q" in self.pressed_keys():
+        if self.kill_key in self.pressed_keys():
             return [
                 front_left_speed,
                 front_right_speed,
@@ -197,6 +204,11 @@ class Keyhoard():
                     self.clamp_angle = determine_angle(pressed_key, self.clamp_angle, self.clamp_action_keys, 5, (76, 110))
                 elif pressed_key in self.thrust_cutter_keys.keys():
                     self.cut_amount = self.thrust_cutter_keys[pressed_key]
+                elif pressed_key in self.bouyancy_keys:
+                    if self.keep_bouyant:
+                        self.keep_bouyant = False
+                    else:
+                        self.keep_bouyant = True
                 # elif pressed_key in self.camera_action_keys:
                 #     self.camera_angle = determine_angle(pressed_key, self.camera_angle, self.camera_action_keys, 15, (0, 90))
                 # elif pressed_key in self.clamp_rotate_action_keys:
@@ -214,6 +226,8 @@ class Keyhoard():
                 mid_left_speed += ksms[0]
                 mid_right_speed += ksms[1]
 
+        
+
         if horiz_divisor == 0:
             horiz_divisor = 1
         if vert_divisor == 0:
@@ -223,9 +237,14 @@ class Keyhoard():
         front_right_speed = front_right_speed / horiz_divisor
         back_left_speed = back_left_speed / horiz_divisor
         back_right_speed = back_right_speed / horiz_divisor
+        if self.keep_bouyant:
+            mid_left_speed = 50 * 0.25
+            mid_right_speed = 50 * 0.25
+        else:
+            mid_left_speed = mid_left_speed / vert_divisor
+            mid_right_speed = mid_right_speed / vert_divisor
 
-        mid_left_speed = mid_left_speed / vert_divisor
-        mid_right_speed = mid_right_speed / vert_divisor
+
         
 
         return [
@@ -281,7 +300,7 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
     # sleep(0.01)
     
     controls.setClawDeg(Servos.claw, ts[6])
-    # sleep(0.01)
+    sleep(0.01)
 
 
     # controls.setClawDeg(Servos.claw, ts[7])
@@ -294,9 +313,10 @@ def show_thruster_speeds(ts, controls: Controls, gui: Tk = None):
 
 k = Keyhoard()
 k.start()
+controls = 0
 controls = Controls()
 controls.startThread()
-# controls = 0
+
 
 
 def create_view(pipe):
