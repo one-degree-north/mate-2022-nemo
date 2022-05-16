@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from controls import Controls
 from botview import XboxViewer
 import multiprocessing as mp
+import time
+import threading
 # from queue import Queue
 
 from math import cos, sin, radians
@@ -351,7 +353,11 @@ def create_view(pipe):
 
     root.mainloop()
 
-
+def autosendThread():
+    while True:
+        time.sleep(0.2)
+        ts = k.thruster_speeds()
+        show_thruster_speeds(ts=ts, controls=controls)
 
 def main(pipe):
     def on_press(key):
@@ -389,9 +395,6 @@ def main(pipe):
 
     keyboardListener = keyboard.Listener(on_press=on_press, on_release=on_release)
     keyboardListener.start()
-    while True:
-        pass
-
 
 
 if __name__ == "__main__":
@@ -406,4 +409,7 @@ if __name__ == "__main__":
         # keyboard_thread.join()
         # gui_thread.join()
     # else:
+    autosendThread = threading.Thread(target=autosendThread)
+    autosendThread.start()
     main(pipe)
+    autosendThread.join()
