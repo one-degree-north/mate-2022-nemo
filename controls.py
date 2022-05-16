@@ -65,7 +65,7 @@ class Controls:
         print("start thread")
 
     def thrusterOn(self, motor, speed):
-        print("THIS IS HAPPENING")
+        # print("THIS IS HAPPENING")
         #Testing, having the input between -50 and 50 instead
         """if motor not in self.flip:
             speed *= -1 # MAJOR SPEED FLIP THING
@@ -94,7 +94,7 @@ class Controls:
 
 
         self.outputQueue.put((0x20, [motor, speed]))
-        print("And so is this")
+        # print("And so is this")
         #self.comms.write(0x20, [motor, speed])
 
     def thrusterOff(self, motor):
